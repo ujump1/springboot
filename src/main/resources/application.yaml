@@ -1,0 +1,78 @@
+
+# spring
+spring:
+  main: # Feign Client
+    allow-bean-definition-overriding: true
+
+  datasource: # mysql
+    url: jdbc:mysql://localhost:3306/springboot?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 100
+
+  jpa: # jpa
+    hibernate:
+      ddl-auto: none
+      namingStrategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+        format_sql: true
+    show-sql: true
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: "guest"
+    password: "guest"
+    #确认消息已发送到交换机(Exchange)
+    publisher-confirms: true
+    #确认消息已发送到队列(Queue)
+    publisher-returns: true
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    # 连接超时时间（毫秒），0会报错的
+    timeout: 5000
+#    jedis:
+#      pool:
+#        # 连接池中的最大空闲连接
+#        max-idle: 8
+#        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+#        max-wait: -1
+#        # 连接池中的最小空闲连接
+#        min-idle: 1
+
+    lettuce:
+      pool:
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1
+        # 连接池中的最小空闲连接
+        min-idle: 1
+  jackson:
+    #日期格式化
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization:
+      #格式化输出
+      indent_output: true
+      # 忽略无法转换的对象
+      # 解决jackson FAIL_ON_EMPTY_BEANS的异常
+      # 或者在实体类上加入注解
+      # @JsonIgnoreProperties(value={“hibernateLazyInitializer”,”handler”})
+      fail_on_empty_beans: false
+    #设置空如何序列化
+    defaultPropertyInclusion: NON_EMPTY
+    deserialization:
+      #允许对象忽略json中不存在的属性
+      fail_on_unknown_properties: false
+    parser:
+      #允许出现特殊字符和转义符
+      allow_unquoted_control_chars: true
+      #允许出现单引号
+      allow_single_quotes: true
+
