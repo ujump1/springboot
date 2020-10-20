@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -38,6 +39,20 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDao getDao() {
 		return userDao;
+	}
+
+
+	@Transactional
+	public void testTransactional(){
+		User user = new User();
+		user.setName("测试事务");
+		user.setCode("1");
+		user.setAge(5);
+		user.setId("11111");
+		userDao.save(user);
+		List<User> users = userDao.findAll();
+		User userFind = userDao.findById("11111").get();
+		System.out.println("123");
 	}
 
 	/**
