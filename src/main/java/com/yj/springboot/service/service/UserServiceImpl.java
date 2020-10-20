@@ -42,6 +42,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	/**
+	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据）
+	 */
 	@Transactional
 	public void testTransactional(){
 		User user = new User();
