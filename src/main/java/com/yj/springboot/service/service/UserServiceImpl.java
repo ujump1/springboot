@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDao userDao;
+
+	@Autowired
+	private UserServiceImpl userService;
 
 	@Override
 	public List<User> findAll() {
@@ -55,6 +59,28 @@ public class UserServiceImpl implements UserService {
 		userDao.save(user);
 		List<User> users = userDao.findAll();
 		User userFind = userDao.findById("11111").get();
+		System.out.println("123");
+		userService.testTransactionalCall();
+		//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		List<User> usersAfterRollback = userDao.findAll();
+		User userFindAfterRollback = userDao.findById("11111").get();
+		userDao.save(user);
+		System.out.println("123");
+	}
+
+	public void testTransactionalCall(){
+		User user = new User();
+		user.setName("测试事务调用");
+		user.setCode("13213");
+		user.setAge(5);
+		user.setId("1112341");
+		userDao.save(user);
+		List<User> users = userDao.findAll();
+		User userFind = userDao.findById("1112341").get();
+		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		//userDao.deleteById("1112341");  回滚还能查到，但数据库没有。除非手动删除
+		List<User> usersAfterRollback = userDao.findAll();
+		User userFindAfterRollback = userDao.findById("1112341").get();
 		System.out.println("123");
 	}
 
