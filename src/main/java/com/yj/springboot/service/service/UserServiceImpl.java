@@ -78,7 +78,9 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userDao.findAll();
 		User userFind = userDao.findById("1112341").get();
 		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-		//userDao.deleteById("1112341");  回滚还能查到，但数据库没有。除非手动删除
+		//userDao.deleteById("1112341");  //回滚还能查到，但数据库没有。除非手动删除
+		userDao.deleteById("123");  // 测试回滚后还能删除数据吗
+		User userFindAfterRollback1 = userDao.findById("123").orElse(null);
 		List<User> usersAfterRollback = userDao.findAll();
 		User userFindAfterRollback = userDao.findById("1112341").get();
 		System.out.println("123");
