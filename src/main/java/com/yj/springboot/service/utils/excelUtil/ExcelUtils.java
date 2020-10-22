@@ -904,9 +904,14 @@ public class ExcelUtils {
      * @param files
      */
     @PostMapping(value = "importUser")
-   // @ApiOperation(value = "导入数据源", notes = "导入数据源")
-   // @ApiImplicitParams(@ApiImplicitParam(name = "files",value = "上传文件流"))
-    public ResponseModel importHouseAssetsLease(MultipartFile files){
+    // @ApiOperation(value = "导入数据源", notes = "导入数据源")
+    // @ApiImplicitParams(@ApiImplicitParam(name = "files",value = "上传文件流"))
+    // 如果是多个的话，请用List<MultipartFile> files
+    // 传参多个文档(参考学习文档）用
+    // formData
+    //  files:(binary)
+    //  files:(binary)
+    public ResponseModel importUser(MultipartFile files){
         List<User> dataList = ExcelUtils.getDataFromExcelByFile(files, User.class);
         // todo 保存dataList
         return ResponseModel.SUCCESS();
