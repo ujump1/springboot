@@ -4,6 +4,7 @@ import com.yj.springboot.api.UserService;
 import com.yj.springboot.entity.User;
 import com.yj.springboot.entity.search.PageResult;
 import com.yj.springboot.entity.search.SearchOrder;
+import com.yj.springboot.service.aop.CustomizedLogAnnotation;
 import com.yj.springboot.service.dao.UserDao;
 import com.yj.springboot.service.vo.BusinessActivityTypeParam;
 import org.apache.commons.lang3.ObjectUtils;
@@ -84,6 +85,13 @@ public class UserServiceImpl implements UserService {
 		List<User> usersAfterRollback = userDao.findAll();
 		User userFindAfterRollback = userDao.findById("1112341").get();
 		System.out.println("123");
+	}
+
+	@CustomizedLogAnnotation
+	public void testLog(){
+		String s= null;
+		s.equals("1");
+		System.out.println(111);
 	}
 
 	/**

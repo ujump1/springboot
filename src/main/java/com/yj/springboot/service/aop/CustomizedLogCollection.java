@@ -1,12 +1,20 @@
 package com.yj.springboot.service.aop;
 
+import com.yj.springboot.service.utils.JsonUtils;
 import com.yj.springboot.service.utils.LogUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.Target;
 
 /**
  * <strong>实现功能:</strong>
@@ -22,10 +30,39 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomizedLogCollection {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomizedLogCollection.class);
+
+
 	@Pointcut("@annotation(com.yj.springboot.service.aop.CustomizedLogAnnotation)")
 	public void customizedLogCollectionPoint() {
 	}
 
+	@Pointcut("@within(org.springframework.stereotype.Service)")
+	public void customizedLogCollectionPoint1() {
+	}
+
+
+	/**
+	 * @within(org.springframework.stereotype.Service) 拦截带有 @Service 注解的类的所有方法
+	 * 方法开始之前执行
+	 */
+	@Before("customizedLogCollectionPoint()")
+	public void before(JoinPoint joinPoint) {
+		// 不知道具体怎么用
+		MDC.put("userId", "1");
+		MDC.put("account", "1");
+		MDC.put("userName", "1");
+		MDC.put("tenantCode", "1");
+		MDC.put("accessToken", "1");
+
+		String argJson = " ";
+		Object[] args = joinPoint.getArgs();
+		try {
+			argJson = args != null ? JsonUtils.toJson(args) : " ";
+			MDC.put("args", argJson);
+		} catch (Exception ignored) {
+		}
+	}
 	/**
 	 * @param joinPoint 常用方法:
 	 *                  Object[] getArgs(): 返回执行目标方法时的参数。
@@ -37,6 +74,6 @@ public class CustomizedLogCollection {
 	 */
 	@AfterThrowing(pointcut = "customizedLogCollectionPoint()", throwing = "throwable")
 	public void afterThrowing(JoinPoint joinPoint, Throwable throwable) throws Exception {
-		LogUtil.trace("",throwable);
+		LOGGER.error(ExceptionUtils.getMessage(throwable), throwable);
  	}
 }
