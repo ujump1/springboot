@@ -13,7 +13,7 @@ import org.slf4j.spi.LocationAwareLogger;
  * 每次调用LoggerFactory.getLogger(String name)时如果已存在则从缓存中获取不会生成新的对象;
  * 同时也不会有对象的创建与销毁造成的性能损失
  *
- * @author 马超(Vision.Mac)
+ * @author yujiang
  * @version 1.0.1 2018/6/20 17:29
  */
 public class LogUtil {
