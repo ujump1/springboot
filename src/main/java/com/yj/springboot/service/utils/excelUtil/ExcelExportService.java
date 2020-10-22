@@ -4,6 +4,7 @@ package com.yj.springboot.service.utils.excelUtil;
 import com.yj.springboot.service.exception.MessageRuntimeException;
 import com.yj.springboot.service.utils.ResourceBundleUtil;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -14,7 +15,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ExcelExport {
+@Service
+public class ExcelExportService {
     //类型，条件，例子，请求
     public void exportDataSourceToExcel(String type, String search, HttpServletResponse response, String json, HttpServletRequest request) {
         //JSONObject jsonObject=JSONObject.parseObject(json);

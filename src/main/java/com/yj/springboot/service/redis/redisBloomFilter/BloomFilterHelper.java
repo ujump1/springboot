@@ -12,7 +12,7 @@ import com.google.common.hash.Hashing;
  * @author YJ
  * @createDate 2020/5/29
  */
-
+// 在RedisConfig中初始化
 public class BloomFilterHelper<T> {
 
     private int numHashFunctions;
