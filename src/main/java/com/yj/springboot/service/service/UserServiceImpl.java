@@ -50,7 +50,6 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据）
 	 */
-	@Transactional
 	public void testTransactional(){
 		User user = new User();
 		user.setName("测试事务");
@@ -62,6 +61,7 @@ public class UserServiceImpl implements UserService {
 		User userFind = userDao.findById("11111").get();
 		System.out.println("123");
 		userService.testTransactionalCall();
+		userService.testTransactionalCall1();
 		//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		List<User> usersAfterRollback = userDao.findAll();
 		User userFindAfterRollback = userDao.findById("11111").get();
@@ -69,6 +69,7 @@ public class UserServiceImpl implements UserService {
 		System.out.println("123");
 	}
 
+	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常,不然就会报错（虽然不影响回退）。
 	public void testTransactionalCall(){
 		User user = new User();
 		user.setName("测试事务调用");
@@ -84,6 +85,24 @@ public class UserServiceImpl implements UserService {
 		User userFindAfterRollback1 = userDao.findById("123").orElse(null);
 		List<User> usersAfterRollback = userDao.findAll();
 		User userFindAfterRollback = userDao.findById("1112341").get();
+		System.out.println("123");
+	}
+	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常。
+	public void testTransactionalCall1(){
+		User user = new User();
+		user.setName("测试事务调用");
+		user.setCode("13213");
+		user.setAge(5);
+		user.setId("11123413232");
+		userDao.save(user);
+		List<User> users = userDao.findAll();
+		User userFind = userDao.findById("11123413232").get();
+		//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		//userDao.deleteById("1112341");  //回滚还能查到，但数据库没有。除非手动删除
+		userDao.deleteById("123");  // 测试回滚后还能删除数据吗
+		User userFindAfterRollback1 = userDao.findById("123").orElse(null);
+		List<User> usersAfterRollback = userDao.findAll();
+		User userFindAfterRollback = userDao.findById("11123413232").get();
 		System.out.println("123");
 	}
 
