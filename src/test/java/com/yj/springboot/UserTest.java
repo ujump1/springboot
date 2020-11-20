@@ -20,6 +20,7 @@ public class UserTest extends BaseTest {
 	public void testTransactional(){
 
 		userService.testTransactional();
+		System.out.println("123");
 	}
 
 }

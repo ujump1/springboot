@@ -48,8 +48,9 @@ public class UserServiceImpl implements UserService {
 
 
 	/**
-	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据）
+	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据），同一个事务下，执行顺序，增，改，删
 	 */
+	@Transactional
 	public void testTransactional(){
 		User user = new User();
 		user.setName("测试事务");
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
 		User userFind = userDao.findById("1112341").get();
 		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		//userDao.deleteById("1112341");  //回滚还能查到，但数据库没有。除非手动删除
-		userDao.deleteById("123");  // 测试回滚后还能删除数据吗
+		//userDao.deleteById("123");  // 测试回滚后还能删除数据吗
 		User userFindAfterRollback1 = userDao.findById("123").orElse(null);
 		List<User> usersAfterRollback = userDao.findAll();
 		User userFindAfterRollback = userDao.findById("1112341").get();
