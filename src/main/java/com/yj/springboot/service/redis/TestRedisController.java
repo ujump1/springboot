@@ -203,13 +203,24 @@ public class TestRedisController {
         return b;
     }
 
-    // 测试queue,会报超时问题 暂未解决
+    // 测试queue
     @GetMapping("/testQueue")
     public ResponseModel testQueue() {
-        consumer.start();
+        consumer.start(); // 只能启动一次
         producer.sendMeassage("redis消息队列测试");
         return ResponseModel.SUCCESS();
     }
+
+
+    // 测试queue
+    @GetMapping("/testQueue1")
+    public ResponseModel testQueue1() {
+       // consumer.start();
+        producer.sendMeassage("redis消息队列测试");
+        return ResponseModel.SUCCESS();
+    }
+
+
 /*-----------------------排队--------------------
     /**
      * 加入队伍

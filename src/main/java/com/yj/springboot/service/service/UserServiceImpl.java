@@ -53,11 +53,12 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void testTransactional(){
 		User user = new User();
-		user.setName("测试事务");
+		user.setName("测试事务flush");
 		user.setCode("1");
 		user.setAge(5);
 		user.setId("11111");
 		userDao.save(user);
+		TransactionAspectSupport.currentTransactionStatus().flush(); // flush不会提交
 		List<User> users = userDao.findAll();
 		User userFind = userDao.findById("11111").get();
 		System.out.println("123");

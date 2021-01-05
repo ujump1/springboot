@@ -120,7 +120,7 @@ public class HTTPClientUtil {
             list.add(new BasicNameValuePair(entry.getKey(),entry.getValue()));
         }
         try {
-            UrlEncodedFormEntity uefe = new UrlEncodedFormEntity(list, "utf-8");  // form 用这个  如果时body 的话 用stringEntity
+            UrlEncodedFormEntity uefe = new UrlEncodedFormEntity(list, "utf-8");  // form 用这个  如果时body 的话 用stringEntity,还可以发送压缩数据，参考网上方法，接收端也需要处理
             httpPost.setEntity(uefe);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
