@@ -27,6 +27,8 @@ public class Receiver {
      */
     public void receiveMessage(String message) throws InterruptedException {
         //testService.getData();
+        // 模拟业务处理时间
+        sleep(3000);
         System.out.println("自定义订阅者Received " + message );
     }
 }

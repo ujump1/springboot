@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author YJ
  * @createDate 2020/5/28
- * 队列消费者
+ * 队列消费者(暂时不可用)
  */
 @Service
 public class MessageConsumerService extends Thread {
@@ -22,7 +22,7 @@ public class MessageConsumerService extends Thread {
     private String queueKey = "queue";
 
    // @Value("${redis.queue.pop.timeout}")
-    private Long popTimeout = 0L;
+    private Long popTimeout = 1000L;
 
     @Override
     public void run() {

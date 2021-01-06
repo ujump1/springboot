@@ -57,6 +57,7 @@ public class RedissonLockAop {
         TimeUnit timeUnit  = annotation.timeUnit();
         if (StringUtils.isEmpty(lockRedisKey)) {
             System.out.println(MessageFormat.format("线程{0} lockRedisKey设置为空，不加锁",threadName));
+            // 直接执行业务操作
             return pjp.proceed();
         } else {
             //生成分布式锁key
@@ -73,14 +74,14 @@ public class RedissonLockAop {
             if (RedissonLockUtils.tryLock(key, waitTime, leaseTime, timeUnit)) {
                 try {
                     System.out.println(MessageFormat.format("线程{0} 获取锁成功", threadName));
-
+                    // 执行业务操作
                     return  pjp.proceed();
                 } finally {
                     if (RedissonLockUtils.isLocked(key)) {
                         System.out.println(MessageFormat.format("key={0}对应的锁被持有,线程{1}",key, threadName));
-
                         if (RedissonLockUtils.isHeldByCurrentThread(key)) {
                             System.out.println(MessageFormat.format("当前线程 {0} 保持锁定",threadName));
+                            // 解除锁
                             RedissonLockUtils.unlock(key);
                             System.out.println(MessageFormat.format("线程{1} 释放锁", threadName));
 
