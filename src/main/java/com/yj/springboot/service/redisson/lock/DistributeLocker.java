@@ -46,6 +46,17 @@ public interface  DistributeLocker {
     boolean tryLock(String lockKey);
 
     /**
+     * 尝试获取锁
+     * 若未获取到，在waitTime时间内一直尝试获取，超过waitTime还未获取到则返回false
+     * @param lockKey   key
+     * @param waitTime  尝试获取时间
+     * @param unit      时间单位
+     * @return true-获取锁成功 false-获取锁失败
+     */
+    boolean tryLock(String lockKey, long waitTime, TimeUnit unit)
+            throws InterruptedException;
+
+    /**
      * 尝试获取锁，获取到则持有该锁leaseTime时间.
      * 若未获取到，在waitTime时间内一直尝试获取，超过waitTime还未获取到则返回false
      * @param lockKey   key

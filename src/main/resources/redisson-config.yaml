@@ -25,3 +25,4 @@ nettyThreads: 0
 codec:
   class: "org.redisson.codec.JsonJacksonCodec"
 transportMode: "NIO"
+lockWatchdogTimeout: 30000

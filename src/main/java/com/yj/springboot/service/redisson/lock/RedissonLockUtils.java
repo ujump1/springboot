@@ -33,6 +33,11 @@ public class RedissonLockUtils {
         return locker.tryLock(lockKey);
     }
 
+    public static boolean tryLock(String lockKey, long waitTime,
+                                  TimeUnit unit) throws InterruptedException {
+        return locker.tryLock(lockKey, waitTime, unit);
+    }
+
     public static boolean tryLock(String lockKey, long waitTime, long leaseTime,
                                   TimeUnit unit) throws InterruptedException {
         return locker.tryLock(lockKey, waitTime, leaseTime, unit);

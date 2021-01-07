@@ -49,6 +49,13 @@ public class RedissonDistributeLocker implements DistributeLocker {
     }
 
     @Override
+    public boolean tryLock(String lockKey, long waitTime,
+                           TimeUnit unit) throws InterruptedException {
+        RLock lock = redissonClient.getLock(lockKey);
+        return lock.tryLock(waitTime, unit);
+    }
+
+    @Override
     public boolean tryLock(String lockKey, long waitTime, long leaseTime,
                            TimeUnit unit) throws InterruptedException {
         RLock lock = redissonClient.getLock(lockKey);

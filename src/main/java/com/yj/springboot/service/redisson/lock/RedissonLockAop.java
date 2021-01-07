@@ -51,7 +51,7 @@ public class RedissonLockAop {
         String lockRedisKey = annotation.lockRedisKey();
         // 等待时间
         long waitTime = annotation.waitTime();
-        // 生成分布式锁key的键名，以逗号分隔
+        // 生成分布式锁key的键名，以逗号分隔(不主动设置释放时间)
         long leaseTime = annotation.leaseTime();
         // 生成分布式锁key的键名，以逗号分隔
         TimeUnit timeUnit  = annotation.timeUnit();
@@ -71,7 +71,7 @@ public class RedissonLockAop {
                 i++;
             }
             System.out.println(MessageFormat.format("线程{0} 锁的key={1}", threadName,key));
-            if (RedissonLockUtils.tryLock(key, waitTime, leaseTime, timeUnit)) {
+            if (RedissonLockUtils.tryLock(key, waitTime, timeUnit)) {
                 try {
                     System.out.println(MessageFormat.format("线程{0} 获取锁成功", threadName));
                     // 执行业务操作
@@ -88,8 +88,6 @@ public class RedissonLockAop {
                         }
 
                     }
-
-
                 }
             } else {
                 System.out.println(MessageFormat.format("线程{0} 获取锁失败", threadName));
