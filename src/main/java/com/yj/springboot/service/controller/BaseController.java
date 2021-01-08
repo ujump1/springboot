@@ -17,7 +17,9 @@ public class BaseController {
 		if (bindingResult.hasErrors()) {
 			List<ObjectError> errorList = bindingResult.getAllErrors();
 			if (CollectionUtils.isNotEmpty(errorList)) {
-				resultData = ResultData.fail("参数校验失败"+errorList.get(0).getDefaultMessage());
+				resultData.setSuccess(false);
+				resultData.setMessage("参数校验失败"+errorList.get(0).getDefaultMessage());
+				resultData.setData(null);
 				return false;
 			}
 		}

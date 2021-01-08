@@ -27,6 +27,18 @@ public class ResultData<T> implements Serializable {
      */
     private T data;
 
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
     /**
      * 私有构造函数
      */
