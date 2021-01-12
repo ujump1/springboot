@@ -157,6 +157,16 @@ public class TestRedisController {
         return result1.toString()+result2.toString()+result3.toString();
     }
 
+    /**
+     * 分布式锁
+     * @return
+     */
+    @GetMapping("lock")
+    public String lock(String key) {
+        Boolean result = redisTemplate.opsForValue().setIfAbsent(key,Thread.currentThread().getId(),60,TimeUnit.SECONDS);
+        return result.toString();
+    }
+
     //stringRedisTemplate对字符串值得存与取
     @GetMapping("stringRedisTemplate")
     public String stringRedisTemplate() {
