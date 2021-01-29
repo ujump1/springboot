@@ -1,13 +1,20 @@
 package com.yj.springboot.service.utils;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * @DESC: 连接hana的工具
+ * @DESC: 连接hana的工具(或者mysql，稍微改改驱动这些)
  * @author YJ
  * @DATE: 2020/7/13
  * @VERSION: 0.0.1
@@ -94,6 +101,79 @@ public class SapHanaUtil {
 
         return count;
     }
+
+    /**
+     * 查询满足条件的数据列表
+     *
+     * @param sql
+     * @param columNames
+     * @return
+     */
+    public static List<Map<String, Object>> getList(String sql, String[] columNames) throws Exception {
+        List<Object[]> result = getList(sql);
+        Map<String, Object> map = null;
+        List<Map<String, Object>> resultMap = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(result) && !ObjectUtils.isEmpty(columNames)) {
+            for (Object[] objects : result) {
+                int len = objects.length;
+                int columNamesLen = columNames.length;
+                if (len == columNamesLen) {
+                    map = new HashMap<>();
+                    for (int i = 0; i < len; i++) {
+                        map.put(columNames[i], objects[i]);
+                    }
+                    resultMap.add(map);
+                }
+            }
+        }
+        return resultMap;
+    }
+
+
+    /**
+     * 查询满足条件的数据列表
+     *
+     * @param sql
+     * @param columNames 列名
+     * @return
+     */
+    //SELECT BUKRS, GJAHR, BELNR, BUDAT, BLDAT, WAERS, XREF1HD, BLART, BKTXT, BUZEI, WRBTR, LIFNR, SUPPLIERNAME, HKONT, TXT50, SHKZG, KOSTL, KTEXT, UMSKZ, PRCTR, ZUONR, XGTXT, XNEGP, TAX_CODE, RSTGR, NAME1, KOART, RESERVE1, ZMONTH
+    //FROM SAPERP.ZFSSC_BKPF_BSEG_BSEC_VIEW;
+    public static <T> List<T> getList(String sql, String[] columNames, Class<T> clazz) throws Exception {
+        List<Map<String, Object>> listMap = getList(sql, columNames);
+        List<T> result = new ArrayList<>();
+        try {
+            for (Map<String, Object> map : listMap) {
+                T obj = clazz.newInstance();
+                for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    // 实体字段为小写
+                    Field field = obj.getClass().getDeclaredField(entry.getKey().toLowerCase());
+                    field.setAccessible(true);
+                    if (field.getType().getName().contains("BigDecimal")) {
+                        if (!ObjectUtils.isEmpty(entry.getValue())
+                                && !StringUtils.isEmpty(entry.getValue())
+                                && !"null".equals(entry.getValue())) {
+                            //System.out.println(entry.getValue());
+                            field.set(obj, new BigDecimal(entry.getValue().toString()));
+                        } else {
+                            field.set(obj, BigDecimal.ZERO);
+                        }
+                    } else {
+                        field.set(obj, entry.getValue());
+                    }
+                }
+                result.add(obj);
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 
     public static String call(){
         List list = new ArrayList();

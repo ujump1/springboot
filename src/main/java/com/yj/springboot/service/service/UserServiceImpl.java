@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,22 +49,20 @@ public class UserServiceImpl implements UserService {
 
 
 	/**
-	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据），同一个事务下，执行顺序，增，改，删
+	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据），同一个事务下，执行顺序，增，改，删,统一类中，如果A调B，B方法开启事务(可以继承A事务，也可以的话自己开启一个事务），需要使用注入自己调用
 	 */
-	@Transactional
 	public void testTransactional(){
 		User user = new User();
-		user.setName("测试事务flush");
+		user.setName("测试事务");
 		user.setCode("1");
 		user.setAge(5);
 		user.setId("11111");
 		userDao.save(user);
-		TransactionAspectSupport.currentTransactionStatus().flush(); // flush不会提交
 		List<User> users = userDao.findAll();
 		User userFind = userDao.findById("11111").get();
 		System.out.println("123");
 		userService.testTransactionalCall();
-		userService.testTransactionalCall1();
+		//userService.testTransactionalCall1();
 		//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		List<User> usersAfterRollback = userDao.findAll();
 		User userFindAfterRollback = userDao.findById("11111").get();
@@ -74,10 +73,10 @@ public class UserServiceImpl implements UserService {
 	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常,不然就会报错（虽然不影响回退）。
 	public void testTransactionalCall(){
 		User user = new User();
-		user.setName("测试事务调用");
+		user.setName("测试事务A调用事务B");
 		user.setCode("13213");
 		user.setAge(5);
-		user.setId("1112341");
+		user.setId("12311313");
 		userDao.save(user);
 		List<User> users = userDao.findAll();
 		User userFind = userDao.findById("1112341").get();
