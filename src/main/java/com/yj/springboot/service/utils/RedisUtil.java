@@ -54,6 +54,7 @@ public class RedisUtil {
 	 * @return 是否成功
 	 */
 	public static Boolean getLock(String lockKey, String value, long timeout, TimeUnit unit) {
+		// redisTemplate.opsForValue().setIfAbsent(lockKey,value,timeout,unit); 这一句相当于下面这些操作
 		if (!TimeUnit.MILLISECONDS.equals(unit)) {
 			timeout = TimeoutUtils.toMillis(timeout, unit);
 		}
