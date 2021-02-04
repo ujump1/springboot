@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 分布式锁的 aop
+ * 分布式锁的 aop(指定参数中的某个值作为key进行锁定)
  */
 @Aspect
 @Component

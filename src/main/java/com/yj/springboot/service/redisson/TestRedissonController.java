@@ -20,7 +20,7 @@ import static java.lang.Thread.sleep;
  * @Description :
  **/
 @RestController
-public class TestReddisonController {
+public class TestRedissonController {
 
     @Autowired
     private RedissonClient redissonClient;

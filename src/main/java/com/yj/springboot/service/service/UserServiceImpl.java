@@ -51,14 +51,16 @@ public class UserServiceImpl implements UserService {
 	/**
 	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据），同一个事务下，执行顺序，增，改，删,统一类中，如果A调B，B方法开启事务(可以继承A事务，也可以的话自己开启一个事务），需要使用注入自己调用
 	 */
+	@Transactional
 	public void testTransactional(){
 		User user = new User();
-		user.setName("测试事务");
+		user.setName("测试事务1");
 		user.setCode("1");
 		user.setAge(5);
 		user.setId("11111");
 		userDao.save(user);
 		List<User> users = userDao.findAll();
+		List<User> users1 = userDao.findAll();
 		User userFind = userDao.findById("11111").get();
 		System.out.println("123");
 		userService.testTransactionalCall();
