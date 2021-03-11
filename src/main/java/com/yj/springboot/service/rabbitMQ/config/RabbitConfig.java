@@ -69,6 +69,7 @@ public class RabbitConfig {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();
         rabbitTemplate.setConnectionFactory(connectionFactory);
         rabbitTemplate.setUseTemporaryReplyQueues(false);
+        // 别人收到需要回复的时候到哪个队列中(别人读取这个地址，向这个队列回复消息，自己收消息则还需配置MessageListener)
         rabbitTemplate.setReplyAddress("RPC2");
         rabbitTemplate.setReplyTimeout(60000);
         return rabbitTemplate;

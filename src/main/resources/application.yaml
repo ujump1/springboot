@@ -4,6 +4,7 @@ spring:
   main: # Feign Client
     allow-bean-definition-overriding: true
 
+
   datasource: # mysql
     url: jdbc:mysql://localhost:3306/springboot?characterEncoding=utf8&useSSL=false&serverTimezone=UTC
     username: root
@@ -75,4 +76,5 @@ spring:
       allow_unquoted_control_chars: true
       #允许出现单引号
       allow_single_quotes: true
-
+server:
+  port=8080:

@@ -79,7 +79,10 @@ public class SearchFilter implements Serializable {
 		PLT,
 
 		@Remark(value = "属性比较", comments = "属性1 <= 属性2")
-		PLE
+		PLE,
+
+		@Remark(value = "不包含", comments = "NOT IN ()")
+		NOTIN
 	}
 
 	/**

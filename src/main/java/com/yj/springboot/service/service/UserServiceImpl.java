@@ -2,7 +2,9 @@ package com.yj.springboot.service.service;
 
 import com.yj.springboot.api.UserService;
 import com.yj.springboot.entity.User;
+import com.yj.springboot.entity.search.PageInfo;
 import com.yj.springboot.entity.search.PageResult;
+import com.yj.springboot.entity.search.Search;
 import com.yj.springboot.entity.search.SearchOrder;
 import com.yj.springboot.service.aop.CustomizedLogAnnotation;
 import com.yj.springboot.service.dao.UserDao;
@@ -45,6 +47,21 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDao getDao() {
 		return userDao;
+	}
+
+	@Override
+	public User findByCode(String code){
+		return getDao().findByCode(code);
+	}
+
+	@Override
+	public PageResult<User> findByPageByPageQueryUtil(PageInfo pageInfo){
+		return getDao().findByPageByPageQueryUtil(pageInfo);
+	}
+
+	@Override
+	public PageResult<User> findByPage(Search search){
+		return getDao().findByPage(search);
 	}
 
 

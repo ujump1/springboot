@@ -22,8 +22,6 @@ import static java.lang.Thread.sleep;
 @RestController
 public class TestRedissonController {
 
-    @Autowired
-    private RedissonClient redissonClient;
 
     @PostMapping(value = "testLock")
     @RedissonLockAnnotation(lockRedisKey = "orderNo",waitTime = 1000, leaseTime = 5000, timeUnit = TimeUnit.MILLISECONDS)
