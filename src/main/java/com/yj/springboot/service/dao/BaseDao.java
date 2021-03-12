@@ -63,6 +63,10 @@ import java.util.List;
 public interface BaseDao<T extends Persistable & Serializable, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 
 
+
+	void save(Collection<T> entities);
+
+
 	T findOne(ID id);
 
 	/**

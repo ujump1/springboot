@@ -1,12 +1,11 @@
 package com.yj.springboot.service.dao.impl;
 
-import com.yj.springboot.entity.base.IFrozen;
-import com.yj.springboot.entity.base.IRank;
-import com.yj.springboot.entity.base.ITenant;
+import com.yj.springboot.entity.base.*;
 import com.yj.springboot.entity.search.*;
 import com.yj.springboot.service.dao.BaseDao;
 import com.yj.springboot.service.exception.BusinessException;
 import com.yj.springboot.service.utils.EnumUtils;
+import com.yj.springboot.service.utils.SequentialUuidHexGenerator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -23,6 +22,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -54,6 +54,99 @@ public class BaseDaoImpl<T extends Persistable & Serializable, ID extends Serial
 			return false;
 		}
 		return true;
+	}
+
+
+
+	/**
+	 * 持久化实体对象
+	 *
+	 * @param entity
+	 * @param <S>
+	 * @return
+	 */
+	@Override
+	@Transactional
+	public <S extends T> S save(S entity) {
+		boolean isNew = preSave(entity);
+		if (isNew) {
+			entityManager.persist(entity);
+		} else {
+			entity = entityManager.merge(entity);
+		}
+		return entity;
+	}
+
+	@Override
+	@Transactional
+	public void save(Collection<T> entities) {
+		if (entities != null && entities.size() > 0) {
+			int i = 0;
+			for (T entity : entities) {
+				i++;
+				boolean isNew = preSave(entity);
+				if (isNew) {
+					entityManager.persist(entity);
+				} else {
+					entityManager.merge(entity);
+				}
+				if (i % 50 == 0) {
+					entityManager.flush();
+					entityManager.clear();
+				}
+			}
+		}
+	}
+
+	protected boolean preSave(T entity) {
+		Assert.notNull(entity, "持久化实体对象不能为空。");
+
+		boolean isNew;
+		if (entity instanceof BaseEntity) {
+			BaseEntity baseEntity = (BaseEntity) entity;
+			ID id = (ID) baseEntity.getId();
+			//id是否有值
+			if (Objects.isNull(id)) {
+				isNew = true;
+				baseEntity.setId(SequentialUuidHexGenerator.generate());
+			} else {
+//                T origin = findOne(id);
+//                isNew = Objects.isNull(origin);
+				if (!existsById(id)) {
+					throw new BusinessException(MessageFormat.format("id：{0}不存在",id));
+				} else {
+					isNew = false;
+				}
+			}
+		} else {
+			isNew = Objects.isNull(entity.getId());
+		}
+		//是否含有业务审计属性实体
+		if (entity instanceof IAuditable) {
+			Date now = new Date();
+			String userId = "0";
+			String userAccount = "匿名";
+			String userName = "匿名";
+			IAuditable auditableEntity = (IAuditable) entity;
+			if (isNew) {
+				//创建
+				auditableEntity.setCreatorId(userId);
+				auditableEntity.setCreatorName(userName);
+				auditableEntity.setCreatorAccount(userAccount);
+				auditableEntity.setCreatedDate(now);
+			}
+			auditableEntity.setLastEditorId(userId);
+			auditableEntity.setLastEditorName(userName);
+			auditableEntity.setLastEditorAccount(userAccount);
+			auditableEntity.setLastEditedDate(now);
+		}
+		//是否是租户实体(只是在租户代码为空时设置)
+		if (entity instanceof ITenant && StringUtils.isBlank(((ITenant) entity).getTenantCode())) {
+			//从上下文中获取租户代码
+			ITenant tenant = (ITenant) entity;
+			tenant.setTenantCode("tenantCode");
+		}
+		return isNew;
 	}
 
 	/**
