@@ -238,7 +238,7 @@ public class ExcelUtils {
         return result;
     }
 
-    /**
+    /** 无用
      * 导出数据并生成Excel文档
      *
      * @param sheetName  工作簿名称
@@ -295,7 +295,7 @@ public class ExcelUtils {
 
     }
 
-    /**
+    /** 无用
      * 导出数据并生成Excel文档
      *
      * @param sheetName 工作簿名称
@@ -754,7 +754,7 @@ public class ExcelUtils {
                     continue;
                 }
                 cellTo.setCellStyle(cellFrom.getCellStyle());
-                cellTo.setCellType(cellFrom.getCellType());
+                cellTo.setCellType(cellFrom.getCellTypeEnum());  // 4.2版本以上的话getCellTypeEnum()需要改成getCellType
                 if (null != cellFrom.getStringCellValue() && !"".equals(cellFrom.getStringCellValue().trim())) {
                     cellTo.setCellValue(cellFrom.getStringCellValue());
                 }
@@ -814,7 +814,7 @@ public class ExcelUtils {
                     cellStyle.setBorderRight(BorderStyle.THIN);//右边框
                     //设置边框
                     row.createCell(j).setCellStyle(cellStyle);
-                    tableRemarkRow.getCell(j).setCellType(Cell.CELL_TYPE_STRING);
+                    tableRemarkRow.getCell(j).setCellType(CellType.STRING);
                     row.createCell(j).setCellValue(tableRemarkRow.getCell(j).getStringCellValue());
                 }
             }
