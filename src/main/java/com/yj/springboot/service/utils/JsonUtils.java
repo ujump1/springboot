@@ -57,7 +57,7 @@ import java.util.List;
  * @see SimpleDateFormat SimpleDateFormat
  */
 @SuppressWarnings("unchecked")
-public abstract class 	JsonUtils {
+public abstract class JsonUtils {
 
 	/**
 	 * 将json通过类型转换成对象

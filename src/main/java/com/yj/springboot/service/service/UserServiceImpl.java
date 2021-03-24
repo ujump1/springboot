@@ -2,10 +2,7 @@ package com.yj.springboot.service.service;
 
 import com.yj.springboot.api.UserService;
 import com.yj.springboot.entity.User;
-import com.yj.springboot.entity.search.PageInfo;
-import com.yj.springboot.entity.search.PageResult;
-import com.yj.springboot.entity.search.Search;
-import com.yj.springboot.entity.search.SearchOrder;
+import com.yj.springboot.entity.search.*;
 import com.yj.springboot.service.aop.CustomizedLogAnnotation;
 import com.yj.springboot.service.dao.UserDao;
 import com.yj.springboot.service.vo.BusinessActivityTypeParam;
@@ -78,6 +75,10 @@ public class UserServiceImpl implements UserService {
 		userDao.save(user);
 		List<User> users = userDao.findAll();
 		List<User> users1 = userDao.findAll();
+		Search search = new Search();
+		search.addFilter(new SearchFilter("name","余大江"));
+		List<User> user123 = userDao.findByFilters(search);
+		userDao.deleteById(users1.get(0).getId());
 		User userFind = userDao.findById("11111").get();
 		System.out.println("123");
 		userService.testTransactionalCall();

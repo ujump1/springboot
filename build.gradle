@@ -1,7 +1,28 @@
-plugins {
-    id 'org.springframework.boot' version '2.2.7.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-    id 'java'
+buildscript {
+    ext {
+        springBootVersion = '2.2.7.RELEASE'
+        springIOVersion = '1.0.0.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "io.spring.gradle:dependency-management-plugin:${springIOVersion}"
+    }
+}
+
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+jar {
+    version = '0.0.1'
+    manifest {
+        attributes "Manifest-Version": 1.0,
+                'Main-Class': 'com.yj.springboot.SpringbootApplication'
+    }
 }
 
 group = 'com.yj.springboot'
