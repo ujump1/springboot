@@ -17,7 +17,7 @@ public class ResponseModel<T> implements Serializable  {
     private static final int STATUS_SUCCESS = 200;
     private static final int STATUS_ERROR = 500;
     private static final int STATUS_NOT_FOUND = 404;
-    private static final int STATUS_ACCESS_FORBIDDEN = 403;
+    private static final int STATUS_ACCESS_FORBIDDEN = 401;
 
     private Date timestamp = Date.from(Instant.now());
     private int status;

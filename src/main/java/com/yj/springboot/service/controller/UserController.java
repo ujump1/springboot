@@ -2,14 +2,18 @@ package com.yj.springboot.service.controller;
 
 import com.yj.springboot.api.UserService;
 import com.yj.springboot.entity.User;
+import com.yj.springboot.service.context.ContextUtil;
+import com.yj.springboot.service.context.SessionUser;
 import com.yj.springboot.service.exception.MessageRuntimeException;
 import com.yj.springboot.service.responseModel.ResponseModel;
+import com.yj.springboot.service.utils.JsonUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.Context;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +29,14 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+
+	@GetMapping("/testToken")
+	@ApiOperation(value = "测试token", notes = "测试token")
+	public String testToken() {
+		SessionUser sessionUser = ContextUtil.getSessionUser();
+		return JsonUtils.toJson(sessionUser);
+	}
 
 	@GetMapping("/list")
 	@ApiOperation(value = "查询全部用户", notes = "查询全部用户")

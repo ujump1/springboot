@@ -2,10 +2,13 @@ package com.yj.springboot.service.config;
 
 import com.alibaba.fastjson.JSONObject;
 import com.yj.springboot.entity.annotation.IgnoreCheckAuth;
+import com.yj.springboot.service.context.ContextUtil;
+import com.yj.springboot.service.context.SessionUser;
 import com.yj.springboot.service.exception.BusinessException;
 import com.yj.springboot.service.exception.HttpStatusEnum;
 import com.yj.springboot.service.responseModel.ResponseModel;
 import com.yj.springboot.service.utils.JsonUtils;
+import com.yj.springboot.service.utils.LogUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +37,14 @@ import java.util.Properties;
 public class SessionUserTokenInterceptor extends HandlerInterceptorAdapter {
     public static final String AUTHORIZATION_KEY = "Authorization";
 
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // 暂时先全部返回成功
+        // 打印此次http请求线程的会话信息，可以发现每次都是空的
+        System.out.println(JsonUtils.toJson(ContextUtil.getSessionUser()));
+        // 暂时先全部返回成功，且模拟用户登录
         if(1==1) {
+            ContextUtil.mockUser();
             return true;
         }
         // 获取请求
@@ -63,13 +70,15 @@ public class SessionUserTokenInterceptor extends HandlerInterceptorAdapter {
             }
         }
         String token = request.getHeader(AUTHORIZATION_KEY);
+        SessionUser sessionUser;
+
         if (!StringUtils.isBlank(token)) {
-           // sessionUser = ContextUtil.getSessionUser(token); //根据token设置当前用户
+            sessionUser = ContextUtil.getSessionUser(token); //根据token设置当前用户
         } else {
             // 特殊方法模拟登录
             if (ignoreAuth(requestPath)) {
                 try {
-                 //   sessionUser = ContextUtil.setSessionUser(tenantCode, account);模拟登录
+                    sessionUser = ContextUtil.setSessionUser("tenantCode", "admin"); //模拟登录
                 }catch (Exception e) {
                     //非法token
                     throw new BusinessException(HttpStatusEnum.AUTHENTICATION_EXCEPTION.getStatus()
@@ -147,5 +156,13 @@ public class SessionUserTokenInterceptor extends HandlerInterceptorAdapter {
         ignorePaths.add("/invoice-kind/listAllInvoiceKind");
 
         return ignorePaths.stream().anyMatch((t) -> path.contains(t));
+    }
+
+    // 请求结束返回给客户端前清除会话信息
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        LogUtil.info("清除会话。。。");
+        ContextUtil.cleanUserToken();
+        super.afterCompletion(request, response, handler, ex);
     }
 }
