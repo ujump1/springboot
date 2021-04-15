@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
 		List<User> users = userDao.findAll();
 		List<User> users1 = userDao.findAll();
 		Search search = new Search();
-		search.addFilter(new SearchFilter("name","余大江"));
+		search.addFilter(new SearchFilter("name","-大江", SearchFilter.Operator.EN));
 		List<User> user123 = userDao.findByFilters(search);
 		userDao.deleteById(users1.get(0).getId());
 		User userFind = userDao.findById("11111").get();

@@ -27,7 +27,7 @@ public class MessageListenerConfig {
     private MyAckReceiver myAckReceiver;//消息接收处理类
 
     @Bean
-    //监听器
+    //监听器,测试MyAckReceiver消息接收
     public SimpleMessageListenerContainer simpleMessageListenerContainer() {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
         container.setConcurrentConsumers(1);
@@ -48,7 +48,7 @@ public class MessageListenerConfig {
         return container;
     }
 
-    //返回队列监听器（（rpc调用必须要配，rabbitTemplate算一个消费者）
+    //返回队列监听器（（rpc调用必须要配，rabbitTemplate算一个消费者）（这样rabbitTemplate就可以就收到RPC2的消息了)
     @Bean(name="replyMessageListenerContainer")
     public SimpleMessageListenerContainer createReplyListenerContainer() {
         SimpleMessageListenerContainer listenerContainer = new SimpleMessageListenerContainer(connectionFactory);

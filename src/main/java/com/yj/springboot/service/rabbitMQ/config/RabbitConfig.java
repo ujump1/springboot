@@ -64,6 +64,7 @@ public class RabbitConfig {
         return rabbitTemplate;
     }
 
+    // 配置用于发送rpc消息的RabbitTemplate
     @Bean(name = "RPC")
     public RabbitTemplate createRabbitTemplateRPC(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();

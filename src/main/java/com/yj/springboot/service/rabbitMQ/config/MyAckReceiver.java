@@ -17,7 +17,7 @@ import static java.lang.Thread.sleep;
  * @Description :
  */
 
-// 相当于一个消费者
+// 相当于一个消费者（跟rpc无关)
 @Component
 public class MyAckReceiver implements ChannelAwareMessageListener {
 
