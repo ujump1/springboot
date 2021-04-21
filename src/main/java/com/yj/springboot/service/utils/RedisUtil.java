@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0.0 2021/1/12
  */
 @Component
+// 需要注入service的话必须加@Component。如果在static静态方法中使用注入的service的话，必须要用本例中的注入方式，
+//                                      如果不在static静态方法中使用注入的service中话，直接使用@Autowired注入即可
 public class RedisUtil {
 	private static final Long SUCCESS = 1L;
 
