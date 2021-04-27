@@ -12,8 +12,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * <strong>实现功能:</strong>
  * <p>Redis distributed lock implementation</p>
  *
- * @author 王锦光 wangj
- * @version 1.0.1 2017-10-31 16:43
+ * @author yj
+ * @version 2021/4/27 1.0.0
  */
 public class RedisLock {
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisLock.class);

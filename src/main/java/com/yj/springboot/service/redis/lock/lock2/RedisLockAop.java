@@ -35,7 +35,7 @@ public class RedisLockAop {
     /**
      * 切点，拦截被 @RedisLockAnnotation 修饰的方法
      */
-    @Pointcut("@annotation(com.yj.springboot.service.redis.lock.RedisLockAnnotation)")
+    @Pointcut("@annotation(com.yj.springboot.service.redis.lock.lock2.RedisLock2Annotation)")
     public void redisLockPoint() {
     }
 
@@ -45,8 +45,8 @@ public class RedisLockAop {
         //当前线程名
         String threadName = Thread.currentThread().getName();
         //获取该注解的实例对象
-        RedisLockAnnotation annotation = ((MethodSignature) pjp.getSignature()).
-                getMethod().getAnnotation(RedisLockAnnotation.class);
+        RedisLock2Annotation annotation = ((MethodSignature) pjp.getSignature()).
+                getMethod().getAnnotation(RedisLock2Annotation.class);
         // 生成分布式锁key方法名
         String lockRedisKey = annotation.lockRedisKey();
         // 释放时间
