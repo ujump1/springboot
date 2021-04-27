@@ -5,6 +5,7 @@ import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.internals.DefaultPartitioner;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.context.annotation.Bean;
@@ -38,6 +39,9 @@ public class KafkaConfig {
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		//值的序列化方式
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+		// 可以设置消息分区策略，不设置的话默认是DefaultPartitioner，如果有key,就按key来，没有的话就轮询策略
+		// 也可以自己实现一个哈，实现org.apache.kafka.clients.producer.Partitioner接口就行了
+		props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, DefaultPartitioner.class);
 		return props;
 	}
 
