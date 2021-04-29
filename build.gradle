@@ -14,9 +14,9 @@ buildscript {
 
 apply plugin: 'idea'
 apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
+apply plugin: 'org.springframework.boot' // 使用spring boot
+apply plugin: 'io.spring.dependency-management'  // 版本依赖管理， 使用spring boot的自动依赖管理
+// 以上是grade 5.6一下的配置，要看新的直接创一个springboot gradle项目看
 jar {
     version = '0.0.1'
     manifest {
