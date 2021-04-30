@@ -24,6 +24,8 @@ import java.util.List;
 /**
  * @author YJ
  * @createDate 2020/6/4
+ * 说明：继承了JpaRepository的，符合Jpa规范的方法比如findByCode会自动实现
+ * 如果使用UserDaoExt中定义的方法，则会自动调用UserDaoExt下的实现，必须要有一个实现类实现UserDaoExt
  */
 @Repository
 public interface UserDao extends BaseEntityDao<User> ,UserDaoExt  {
