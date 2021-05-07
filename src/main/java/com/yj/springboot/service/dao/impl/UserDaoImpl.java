@@ -1,11 +1,10 @@
 package com.yj.springboot.service.dao.impl;
 
 import com.yj.springboot.entity.User;
-import com.yj.springboot.entity.base.BaseEntity;
 import com.yj.springboot.entity.search.PageInfo;
 import com.yj.springboot.entity.search.PageResult;
-import com.yj.springboot.service.dao.UserDao;
 //import com.yj.springboot.service.dao.ext.UserDaoExt;
+import com.yj.springboot.service.dao.base.impl.BaseEntityDaoImpl;
 import com.yj.springboot.service.dao.ext.UserDaoExt;
 import com.yj.springboot.service.utils.PageQueryUtil;
 import org.springframework.data.domain.Page;
@@ -15,7 +14,8 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 
-// 不知道为什么,这里必须要声明一个继承BaseEntityDaoImpl的类，不然UserDao继承的BaseDao方法就找不到实现，具体原因还没找到
+// 这里必须要声明一个继承BaseEntityDaoImpl的类，不然UserDao继承的BaseDao方法就找不到实现,因为默认的自动装配找不到
+// 现在实现了自定义自动装配，如果没有自定义Ext的话，就不用写这个了
 @Component
 public class UserDaoImpl extends  BaseEntityDaoImpl<User> implements UserDaoExt {
 

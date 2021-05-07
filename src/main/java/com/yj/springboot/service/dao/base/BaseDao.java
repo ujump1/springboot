@@ -1,4 +1,4 @@
-package com.yj.springboot.service.dao;
+package com.yj.springboot.service.dao.base;
 
 
 import com.yj.springboot.entity.search.PageResult;
@@ -59,7 +59,7 @@ import java.util.List;
  * @see JpaRepository
  * @see JpaSpecificationExecutor
  */
-@NoRepositoryBean
+@NoRepositoryBean // 这个注解标识不会被实例化
 public interface BaseDao<T extends Persistable & Serializable, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 
 

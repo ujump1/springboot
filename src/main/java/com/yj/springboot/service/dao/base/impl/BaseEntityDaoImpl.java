@@ -1,4 +1,4 @@
-package com.yj.springboot.service.dao.impl;
+package com.yj.springboot.service.dao.base.impl;
 ;
 
 import com.yj.springboot.entity.base.BaseEntity;

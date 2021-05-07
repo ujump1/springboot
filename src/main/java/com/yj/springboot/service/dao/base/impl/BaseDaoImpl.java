@@ -1,8 +1,8 @@
-package com.yj.springboot.service.dao.impl;
+package com.yj.springboot.service.dao.base.impl;
 
 import com.yj.springboot.entity.base.*;
 import com.yj.springboot.entity.search.*;
-import com.yj.springboot.service.dao.BaseDao;
+import com.yj.springboot.service.dao.base.BaseDao;
 import com.yj.springboot.service.exception.BusinessException;
 import com.yj.springboot.service.utils.EnumUtils;
 import com.yj.springboot.service.utils.SequentialUuidHexGenerator;
