@@ -12,7 +12,7 @@ public class MoveInStreet extends Move {
 	@Override
 	public String walkInPlace() {
 		System.out.println("当前环境在街道中");
-		human.walk();
+		human.walk("街道");
 		return "ok";
 	}
 }

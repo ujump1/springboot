@@ -14,7 +14,7 @@ public class MoveInDesert extends Move {
 	@Override
 	public String walkInPlace() {
 		System.out.println("当前环境在沙漠中");
-		human.walk();
+		human.walk("沙漠");
 		return "ok";
 	}
 }

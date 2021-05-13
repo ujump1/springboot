@@ -13,4 +13,9 @@ public class Baby implements Human {
 	public void walk() {
 		System.out.println("Baby 在爬行");
 	}
+
+	@Override
+	public void walk(String place) {
+		System.out.println(MessageFormat.format("Baby 在{0} 爬行",place));
+	}
 }

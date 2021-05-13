@@ -13,4 +13,9 @@ public class Old implements Human {
 	public void walk() {
 		System.out.println("Old 拄拐杖走路");
 	}
+
+	@Override
+	public void walk(String place) {
+		System.out.println(MessageFormat.format("Old 在{0} 拄拐杖走路",place));
+	}
 }
