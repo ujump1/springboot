@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 工厂模式
+ * springboot整合工厂模式，这里的资源是实现接口的类
  * @author YJ
  * @version 2020/10/20 1.0.0
  */
