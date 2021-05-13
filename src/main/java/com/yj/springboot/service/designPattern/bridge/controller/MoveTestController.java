@@ -29,7 +29,7 @@ public class MoveTestController {
 	// 桥接模式主要用于两个不相关的维度的可以独立扩展，并且其中一个要使用另外一个的方法
     // 桥接模式和策略模式的不一样的地方在于：
     // 策略模式就是有一个接口，然后会有不同的实现，用的时候根据代码什么的获取需要使用哪个实现方法。
-    // 桥接模式包含了策略模式，可以手动赋值用哪个策略
+    // 桥接模式包含了策略模式，可以手动赋值用哪个策略。
 	@GetMapping("/testBridge")
 	public String testStrategy(String code) {
 		Human human = humanStrategyContext.getResource(code);
