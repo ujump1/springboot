@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 策略模式
+ * 工厂模式
  * @author YJ
  * @version 2020/10/20 1.0.0
  */
