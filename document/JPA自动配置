@@ -1,10 +1,8 @@
 1.JPA自动配置在spring-boot-autoconfigure下，默认使用接口名+Impl来匹配实现类。
 2.JPA会把继承了Repository接口或者加了注解的的自动代理生成一个实现类。实现规则如下：
-  首先会根据有哪些接口，加载接口加Impl的实现类(可有可无)。
-  然后对每个接口，默认的自动配置会返回一个SimpleJpaRepository工厂来实现基本方法和接口中按JPA规范的代码。
-  如果有实现类，就用实现类来。
-  以上是该项目的重写。
-  jpa默认的是直接用SimpleJpaRepository，或者用继承他的类且是@component。
-3.也可以自定义自动配置，主要用@EnableJpaRepositories这个接口，并可以新写一个工厂类。本项目就是自己实现的，规则就是第二个。
+  1.首先会根据有哪些接口，加载接口加Impl的实现类(可有可无)。
+  2.然后对每个接口，默认的自动配置会返回一个SimpleJpaRepository工厂来实现基本方法和接口中按JPA规范的代码。
+  3.如果有实现类，就用实现类来。。
+3.也可以自定义自动配置，主要用@EnableJpaRepositories这个接口，并可以新写一个工厂类，主要改上面的第二步。本项目就是自己实现的，默认用SimpleJpaRepository，优先用BaseEntityDaoImpl和BaseDaoImpl，他们都继承了SimpleJpaRepository。
 4.假如有一个接口UserDao，两个实现类UserDaoImpl和User1DaoImpl，他会先加载初始化UserDaoImpl，然后为UserDao自动配置一个实现类，其中会用到UserDaoImpl。
   然后再去实例化User1Dao1Impl。
