@@ -59,7 +59,13 @@ public class RabbitConfig {
 
     @Bean(name = "secondRabbitTemplate")
     public RabbitTemplate createRabbitTemplate2(ConnectionFactory connectionFactory) {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate();
+        RabbitTemplate rabbitTemplate = new RabbitTemplate() {
+            // 这里可以重写消费事件
+            @Override
+            public void onMessage(Message message) {
+                System.out.println("secondRabbitTemplate收到消息" + message.getBody());
+            }
+        };
         rabbitTemplate.setConnectionFactory(connectionFactory);
         return rabbitTemplate;
     }

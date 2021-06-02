@@ -1,6 +1,7 @@
 package com.yj.springboot;
 
 import com.yj.springboot.service.service.UserServiceImpl;
+import com.yj.springboot.service.utils.LogUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

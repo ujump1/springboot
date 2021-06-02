@@ -29,7 +29,8 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class JpaAutoConfiguration {
 
-	// 测试在spring-factories中配置了才能自动配置，不知道为什么
+	// 测试在spring-factories中配置了才能自动配置，不知道为什么。
+	// 因为不配在那里的话，可能@ConditionalOnBean({DataSource.class})这个会不成立，因为包下（内部）的配置先加载
 	@Bean
 	public User user(){
 		User user = new User();
