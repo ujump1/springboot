@@ -2,6 +2,7 @@ package com.yj.springboot.service.utils;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.TimeoutUtils;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -22,13 +23,13 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
 	private static final Long SUCCESS = 1L;
 
-	private static StringRedisTemplate redisTemplate;
+	private static RedisTemplate<String, Object> redisTemplate;
 
 	/**
 	 * 初始化注入
 	 */
 	@Autowired
-	public RedisUtil(StringRedisTemplate redisTemplate) {
+	public RedisUtil( RedisTemplate<String, Object>  redisTemplate) {
 		RedisUtil.redisTemplate = redisTemplate;
 	}
 

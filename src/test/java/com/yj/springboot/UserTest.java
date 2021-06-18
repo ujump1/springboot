@@ -21,4 +21,11 @@ public class UserTest extends BaseTest {
 		System.out.println("123");
 	}
 
+	@Test
+	public void testTransactiona2(){
+
+		userService.testTran1();
+		System.out.println("123");
+	}
+
 }

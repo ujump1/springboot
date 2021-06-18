@@ -135,6 +135,27 @@ public class UserServiceImpl implements UserService {
 		System.out.println(111);
 	}
 
+
+	@Transactional
+	public void testTran1(){
+		List<User> users = userDao.findAll();
+		User user = users.get(0);
+		user.setName("测试事务2");
+		userDao.save(user);
+		userService.testTran2();
+	}
+
+	public void testTran2(){
+		List<User> users = userDao.findAll();
+		User user = users.get(0);
+		user.setName("测试事务3");
+		userDao.save(user);
+		List<String> stringList = new ArrayList<>();
+		stringList.get(1);
+	}
+
+
+
 	/**
 	 * 分页查询示例
 	 */
