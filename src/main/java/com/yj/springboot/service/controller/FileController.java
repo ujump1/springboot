@@ -6,6 +6,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -78,6 +80,29 @@ public class FileController {
 				.body(new ByteArrayResource(bytes));
 	}
 
+	/**
+	 * 下载
+	 * @param docId 文档id
+	 * 这里InputStreamResource为例
+	 */
+	@GetMapping("download")
+	@ApiOperation(value = "下载", notes = "下载")
+	ResponseEntity<InputStreamResource> download1(@RequestParam("docId") @NotBlank String docId) throws IOException {
+		// 获取文件
+		String filePath = "E:/" + docId + ".rmvb";
+		FileSystemResource file = new FileSystemResource(filePath);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getFilename()));
+		headers.add("Pragma", "no-cache");
+		headers.add("Expires", "0");
 
+		return ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentLength(file.contentLength())
+				.contentType(MediaType.parseMediaType("application/octet-stream"))
+				.body(new InputStreamResource(file.getInputStream()));
 
+	}
 }
