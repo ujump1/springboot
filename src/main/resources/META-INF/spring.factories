@@ -1,3 +1,4 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.yj.springboot.service.dao.base.autoConfig.JpaAutoConfiguration
+#com.com.yj.springboot.service.config.DefaultAutoConfig

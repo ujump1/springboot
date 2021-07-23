@@ -60,15 +60,20 @@ public class RestTemplateConfig {
 		return createRestTemplate(requestFactory);
 	}
 
-//	@Bean
-//	public RestTemplate restTemplate(RestTemplateBuilder builder) {
-//		return builder.build();
-//	}
+	/**
+	 * 默认的实现,注意同一个类型的构造方法名不要一样哈
+	 * @param builder
+	 * @return
+	 */
+	@Bean
+	public RestTemplate restTemplateDefault(RestTemplateBuilder builder) {
+		return builder.build();
+	}
 
-//	@Bean("myUrlTemplateOfBuilder")
-//	public RestTemplate restTemplateOfBuilder(@Qualifier("MyClientHttpRequestFactory1") ClientHttpRequestFactory requestFactory, RestTemplateBuilder builder) {
-//		return createRestTemplateBuilder(requestFactory,builder);
-//	}
+	@Bean("myUrlTemplate2")
+	public RestTemplate restTemplateOfBuilder(@Qualifier("MyClientHttpRequestFactory1") ClientHttpRequestFactory requestFactory) {
+		return createRestTemplate(requestFactory);
+	}
 
 	// 当有多个bean被其他的构造函数注入时，如果有	@Primary那就会用这个，没有的话就需要使用@Qualifier来注明
 	@Primary
@@ -186,19 +191,6 @@ public class RestTemplateConfig {
 		//设置错误处理器
 		restTemplate.setErrorHandler(new SeiRestTemplateErrorHandle());
 
-		return restTemplate;
-	}
-
-	private RestTemplate createRestTemplateBuilder(ClientHttpRequestFactory factory, RestTemplateBuilder builder) {
-		RestTemplate restTemplate =  builder
-				.requestFactory(ClientHttpRequestFactory.class)
-				.errorHandler(new SeiRestTemplateErrorHandle())
-				.build();
-
-
-		//我们采用RestTemplate内部的MessageConverter
-		//重新设置StringHttpMessageConverter字符集，解决中文乱码问题
-		modifyDefaultCharset(restTemplate);
 		return restTemplate;
 	}
 
