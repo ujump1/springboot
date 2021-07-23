@@ -5,6 +5,7 @@ import com.yj.springboot.service.utils.LogUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
@@ -16,11 +17,11 @@ import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.Base64;
 
 @RestController
@@ -72,7 +73,13 @@ public class FileController {
 		byte[] bytes = Base64Utils.decodeFromString(base64Source);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-		headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"",fileName));
+		try {
+			headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"",new String( fileName.getBytes("UTF-8"), "ISO8859-1" )));
+		} catch (UnsupportedEncodingException e) {
+			// 文件名转换失败
+			LogUtil.error("发票下载失败:文件名转换失败"+fileName);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 		return ResponseEntity
 				.ok()
 				.headers(headers)
@@ -80,14 +87,15 @@ public class FileController {
 				.body(new ByteArrayResource(bytes));
 	}
 
+
 	/**
 	 * 下载
 	 * @param docId 文档id
-	 * 这里InputStreamResource为例
+	 * 这里FileSystemResource为例
 	 */
-	@GetMapping("download")
+	@GetMapping("download1")
 	@ApiOperation(value = "下载", notes = "下载")
-	ResponseEntity<InputStreamResource> download1(@RequestParam("docId") @NotBlank String docId) throws IOException {
+	ResponseEntity<FileSystemResource> download1(@RequestParam("docId") @NotBlank String docId) throws IOException {
 		// 获取文件
 		String filePath = "E:/" + docId + ".rmvb";
 		FileSystemResource file = new FileSystemResource(filePath);
@@ -102,7 +110,45 @@ public class FileController {
 				.headers(headers)
 				.contentLength(file.contentLength())
 				.contentType(MediaType.parseMediaType("application/octet-stream"))
-				.body(new InputStreamResource(file.getInputStream()));
+				.body(file);
 
+	}
+
+	@RequestMapping(value="/download2", method=RequestMethod.GET)
+	public void download2(Long id, HttpServletRequest request, HttpServletResponse response) {
+
+		// Get your file stream from wherever.
+		String fullPath = "E:/" + id +".rmvb";
+		File downloadFile = new File(fullPath);
+
+		ServletContext context = request.getServletContext();
+
+		// get MIME type of the file
+		String mimeType = context.getMimeType(fullPath);
+		if (mimeType == null) {
+			// set to binary type if MIME mapping not found
+			mimeType = "application/octet-stream";
+			System.out.println("context getMimeType is null");
+		}
+		System.out.println("MIME type: " + mimeType);
+
+		// set content attributes for the response
+		response.setContentType(mimeType);
+		response.setContentLength((int) downloadFile.length());
+
+		// set headers for the response
+		String headerKey = "Content-Disposition";
+		String headerValue = String.format("attachment; filename=\"%s\"",
+				downloadFile.getName());
+		response.setHeader(headerKey, headerValue);
+
+		// Copy the stream to the response's output stream.
+		try {
+			InputStream myStream = new FileInputStream(fullPath);
+			IOUtils.copy(myStream, response.getOutputStream());
+			response.flushBuffer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
