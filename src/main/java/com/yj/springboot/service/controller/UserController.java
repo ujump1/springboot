@@ -79,6 +79,15 @@ public class UserController {
 		return responseModel;
 	}
 
+	@GetMapping("/addAll")
+	@Transactional(rollbackFor = Exception.class)
+	public void addAll() {
+		for(int i = 100;i<105;i++){
+			// 每次都会开启新事务哈，会将外面的事务挂起
+			userService.add(String.valueOf(i));
+		}
+	}
+
 	/**
 	 * http://localhost:8080//admin?add=3&test=2 能访问
 	 * http://localhost:8080//admin?add=&test=3 不能访问

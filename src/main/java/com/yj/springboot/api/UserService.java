@@ -23,4 +23,6 @@ public interface UserService {
 
 	PageResult<User> findByPageByPageQueryUtil(PageInfo pageInfo);
 
+	void add(String id);
+
 }

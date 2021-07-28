@@ -5,15 +5,20 @@ import com.yj.springboot.entity.User;
 import com.yj.springboot.entity.search.*;
 import com.yj.springboot.service.aop.CustomizedLogAnnotation;
 import com.yj.springboot.service.dao.UserDao;
+import com.yj.springboot.service.responseModel.ResponseModel;
 import com.yj.springboot.service.vo.BusinessActivityTypeParam;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
@@ -21,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,6 +34,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 
+	@Lazy
 	@Autowired
 	private UserServiceImpl userService;
 
@@ -48,18 +55,31 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByCode(String code){
+	public User findByCode(String code) {
 		return getDao().findByCode(code);
 	}
 
 	@Override
-	public PageResult<User> findByPageByPageQueryUtil(PageInfo pageInfo){
+	public PageResult<User> findByPageByPageQueryUtil(PageInfo pageInfo) {
 		return getDao().findByPageByPageQueryUtil(pageInfo);
 	}
 
 	@Override
-	public PageResult<User> findByPage(Search search){
+	public PageResult<User> findByPage(Search search) {
 		return getDao().findByPage(search);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+	public void add(String id) {
+		List<User> users= findAll();
+		User user = new User();
+		user.setId(null);
+		user.setName("余江");
+		user.setAge(18);
+		user.setCode(id);
+		userService.getDao().save(user);
+		users = findAll();
 	}
 
 
@@ -153,6 +173,36 @@ public class UserServiceImpl implements UserService {
 		List<String> stringList = new ArrayList<>();
 		stringList.get(1);
 	}
+
+
+	/**
+	 * 异步方式1
+	 * @return
+	 */
+	@Async("taskExecutor")// 加了异步的话，自己注入自己的话要加上@Lazy
+	public Future<Integer> sum(){
+		int a = 0;
+		for(int i=0;i<50;i++){
+			a=a + i;
+		}
+		return new AsyncResult<>(a);
+	}
+
+	/**
+	 * 异步方式2
+	 * @return
+	 */
+	public Integer sum1(){
+		int a = 0;
+		for(int i=0;i<50;i++){
+			a=a + i;
+		}
+		return a;
+	}
+
+
+
+
 
 
 
