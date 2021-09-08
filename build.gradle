@@ -74,9 +74,9 @@ dependencies {
 
 
     // https://mvnrepository.com/artifact/org.apache.poi/poi
-    compile group: 'org.apache.poi', name: 'poi', version: '3.17'
+    compile group: 'org.apache.poi', name: 'poi', version: '4.0.0'
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml 
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.0.0'
 
 
     compile("org.modelmapper:modelmapper:2.0.0")
@@ -107,6 +107,15 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka
     implementation group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.4.12.RELEASE'
+
+    // https://mvnrepository.com/artifact/cn.afterturn/easypoi-web
+    implementation group: 'cn.afterturn', name: 'easypoi-web', version: '4.0.0'
+    // https://mvnrepository.com/artifact/cn.afterturn/easypoi-base
+    implementation group: 'cn.afterturn', name: 'easypoi-base', version: '4.0.0'
+    // https://mvnrepository.com/artifact/cn.afterturn/easypoi-annotation
+    implementation group: 'cn.afterturn', name: 'easypoi-annotation', version: '4.0.0'
+
+
 
 
 

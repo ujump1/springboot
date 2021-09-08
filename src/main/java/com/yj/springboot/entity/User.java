@@ -20,6 +20,9 @@ public class User extends BaseEntity {
     //@Column(name = "age")
     private Integer age;
 
+    @Transient
+    protected String m ;
+
     public String getCode() {
         return code;
     }
@@ -42,5 +45,13 @@ public class User extends BaseEntity {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getM() {
+        return m;
+    }
+
+    public void setM(String m) {
+        this.m = m;
     }
 }

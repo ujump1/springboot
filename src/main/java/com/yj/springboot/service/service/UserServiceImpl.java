@@ -24,6 +24,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.RollbackException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -82,7 +83,6 @@ public class UserServiceImpl implements UserService {
 		users = findAll();
 	}
 
-
 	/**
 	 * 测试事务（查询不会提交事务，但是可以查询这个事务中新增的数据），同一个事务下，执行顺序，增，改，删,统一类中，如果A调B，B方法开启事务(可以继承A事务，也可以的话自己开启一个事务），需要使用注入自己调用
 	 */
@@ -111,22 +111,29 @@ public class UserServiceImpl implements UserService {
 		System.out.println("123");
 	}
 
-	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常,不然就会报错（虽然不影响回退）。
+
+	@Transactional(rollbackFor = Exception.class)
+	public void testRollback(){ int a = 1;
+		User user = userService.findByCode("0001123");
+		user.setName("回滚1");
+		userDao.save(user);
+		userService.testTransactionalCall();
+		System.out.println("123456");
+	}
+
+
+	@Transactional(rollbackFor = Exception.class) // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时使用service.xxx调用(不是这样的话也不会报错)，这个方法如果事务回退必须要抛异常,不然就会报错（虽然不影响回退）。
 	public void testTransactionalCall(){
 		User user = new User();
-		user.setName("测试事务A调用事务B");
+		user.setName("测试事务A调用事务B123");
 		user.setCode("13213");
 		user.setAge(5);
-		user.setId("12311313");
+		user.setId("7aec75ba-017a-ec75d317-2c2880fb-0001");
 		userDao.save(user);
 		List<User> users = userDao.findAll();
-		User userFind = userDao.findById("1112341").get();
 		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		//userDao.deleteById("1112341");  //回滚还能查到，但数据库没有。除非手动删除
 		//userDao.deleteById("123");  // 测试回滚后还能删除数据吗
-		User userFindAfterRollback1 = userDao.findById("123").orElse(null);
-		List<User> usersAfterRollback = userDao.findAll();
-		User userFindAfterRollback = userDao.findById("1112341").get();
 		System.out.println("123");
 	}
 	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常。
@@ -160,9 +167,11 @@ public class UserServiceImpl implements UserService {
 	public void testTran1(){
 		List<User> users = userDao.findAll();
 		User user = users.get(0);
-		user.setName("测试事务2");
-		userDao.save(user);
-		userService.testTran2();
+		user.setName("测试事务4");
+		//userDao.save(user);
+		User user2 = users.get(2);
+		user2.setName("测试事务修改不保存2");
+		//userService.testTran2();
 	}
 
 	public void testTran2(){
@@ -198,6 +207,18 @@ public class UserServiceImpl implements UserService {
 			a=a + i;
 		}
 		return a;
+	}
+
+
+	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常,不然就会报错（虽然不影响回退）。
+	public void testTransactionalCall3(){
+		User user = new User();
+		user.setName("测试事务A调用事务B");
+		user.setCode("13213");
+		user.setAge(5);
+		userDao.save(user);
+		List<User> users = userDao.findAll();
+		System.out.println("123");
 	}
 
 

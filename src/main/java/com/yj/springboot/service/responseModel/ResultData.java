@@ -57,6 +57,15 @@ public class ResultData<T> implements Serializable {
         this.data = data;
     }
 
+    /**
+     * 私有构造函数
+     */
+    private ResultData(Boolean success, String message) {
+        this.success = success;
+        this.message = message;
+        this.data = null;
+    }
+
     public Boolean getSuccess() {
         return success;
     }
@@ -94,6 +103,17 @@ public class ResultData<T> implements Serializable {
         }
         return !success;
     }
+    /**
+     * 处理成功
+     *
+     * @param <T>  数据对象类型
+     * @return 处理结果
+     */
+    public static <T> ResultData<T> success() {
+        return new ResultData<>(Boolean.TRUE, DEFAULT_SUCCESSFUL_MSG);
+    }
+
+
 
     /**
      * 处理成功

@@ -1,10 +1,13 @@
 package com.yj.springboot;
 
 
+import com.yj.springboot.entity.User;
 import com.yj.springboot.service.controller.UserController;
+import com.yj.springboot.service.dao.UserDao;
 import com.yj.springboot.service.other.thread.Futuretask;
 import com.yj.springboot.service.service.UserServiceImpl;
 import com.yj.springboot.service.utils.JsonUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,12 +23,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
+import static java.lang.Thread.sleep;
+
 public class UserTest extends BaseTest {
 
 	@Autowired
 	private UserServiceImpl userService;
 	@Autowired
 	private UserController userController;
+	@Autowired
+	private UserDao userDao;
 
 	@Test
 	public void testTransactional(){
@@ -40,8 +47,12 @@ public class UserTest extends BaseTest {
 		userService.testTran1();
 		System.out.println("123");
 	}
+	@Test
+	public void testRollback(){
 
-
+		userService.testRollback();
+		System.out.println("123");
+	}
 	@Test
 	public void testGlobalException(){
 		userController.testGlobalException(); // 这里是全局异常捕获是不会捕获不到异常的
@@ -80,6 +91,27 @@ public class UserTest extends BaseTest {
 		for(Future<Integer> future:futures ){
 			System.out.println(future.get());
 		}
+	}
+
+
+	@Test
+	public void testTransactionInThread() throws InterruptedException {
+		Thread thread  = new Thread(){
+			public void run(){
+				userService.testTransactionalCall();
+				System.out.println("线程1执行完成");
+			}
+		};
+		thread.start();
+
+		Thread thread1  = new Thread(){
+			public void run(){
+				userService.testTransactionalCall3();
+				System.out.println("线程2执行完成");
+			}
+		};
+		thread1.start();
+		sleep(5000);
 	}
 
 }

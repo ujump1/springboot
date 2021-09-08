@@ -2,6 +2,7 @@ package com.yj.springboot.service.controller;
 
 import com.yj.springboot.service.responseModel.ResultData;
 import com.yj.springboot.service.utils.LogUtil;
+import com.yj.springboot.service.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -97,7 +98,7 @@ public class FileController {
 	@ApiOperation(value = "下载", notes = "下载")
 	ResponseEntity<FileSystemResource> download1(@RequestParam("docId") @NotBlank String docId) throws IOException {
 		// 获取文件
-		String filePath = "E:/" + docId + ".rmvb";
+		String filePath = "C:\\Users\\YJ\\Desktop\\QQ图片20210629133124.jpg";
 		FileSystemResource file = new FileSystemResource(filePath);
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -118,7 +119,7 @@ public class FileController {
 	public void download2(Long id, HttpServletRequest request, HttpServletResponse response) {
 
 		// Get your file stream from wherever.
-		String fullPath = "E:/" + id +".rmvb";
+		String fullPath = "C:\\Users\\YJ\\Desktop\\QQ图片20210629133124.jpg";
 		File downloadFile = new File(fullPath);
 
 		ServletContext context = request.getServletContext();
