@@ -19,6 +19,17 @@ import java.util.Objects;
 @Component
 public class KafkaConsumer {
 
+
+    //kafka-consumer-groups.bat --bootstrap-server localhost:9092 --describe --group bootKafka
+//    bootKafka       test            6          3               3               0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       test            0          6               6               0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       test            7          14              14              0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       test            5          0               0               0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       test            1          1               1               0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       test            4          0               0               0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       test            3          3               3               0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       test            2          0               0               0               测试-0-aa74561c-49cb-404d-ba52-c971e303f1f1       /172.168.0.35   测试-0
+//    bootKafka       testKafka       0          5               5               0               consumer-1-03ca91e5-b5de-452d-b436-d8e87015f589 /172.168.0.35   consumer-1
     /**
      * 处理收到的监听消息
      *
