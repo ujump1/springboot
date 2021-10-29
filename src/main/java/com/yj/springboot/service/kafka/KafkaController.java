@@ -27,7 +27,7 @@ public class KafkaController {
 
 	@GetMapping("/sendMessage1")
 	public String sendMessage1(String message) {
-		kafkaTemplate.send("test", "test", message);
+		kafkaTemplate.send("test", message, message);
 		return "ok";
 	}
 

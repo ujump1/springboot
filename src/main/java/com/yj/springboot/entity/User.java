@@ -3,6 +3,7 @@ package com.yj.springboot.entity;
 import com.yj.springboot.entity.base.BaseEntity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 
 @Table
@@ -22,6 +23,9 @@ public class User extends BaseEntity {
 
     @Transient
     protected String m ;
+
+    @Transient
+    private BigDecimal amount;
 
     public String getCode() {
         return code;
@@ -53,5 +57,13 @@ public class User extends BaseEntity {
 
     public void setM(String m) {
         this.m = m;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 }

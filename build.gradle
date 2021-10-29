@@ -116,6 +116,9 @@ dependencies {
     implementation group: 'cn.afterturn', name: 'easypoi-annotation', version: '4.0.0'
 
 
+    compile("com.squareup.okhttp3:okhttp:3.14.7")
+
+
 
 
 

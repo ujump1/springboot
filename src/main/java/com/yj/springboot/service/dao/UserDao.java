@@ -4,6 +4,8 @@ import com.yj.springboot.entity.User;
 import com.yj.springboot.service.dao.base.BaseEntityDao;
 //import com.yj.springboot.service.dao.ext.UserDaoExt;
 import com.yj.springboot.service.dao.ext.UserDaoExt;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -26,4 +28,8 @@ public interface UserDao extends BaseEntityDao<User> ,UserDaoExt  {
 
 	User findByCode(String code);
 
+
+	@Modifying
+	@Query(value = "delete from user where code=?1",nativeQuery = true)
+	 void deleteByCode(String code);
 }

@@ -26,6 +26,7 @@ public class KafkaConsumer {
      */
     // 这里可以设置id,group_id,默认情况下如果不设置group_id，则会用id重写group_id，除非设置idIsGroup=false
     // 这里的配置会重写kafkaConfig里面的通用配置，比如group_id
+    // kafka 里面对应的有group consumer-id client-id ,其中group 等于groupId consumer-id client-id都是自动生成的，前缀由clientIdPrefix决定，后面则是自己生成的，和这个注解里面的id没有关系
     @KafkaListener(id = "consumer1",topics = "testKafka",idIsGroup = false)
     public void processMessage(ConsumerRecord<String, String> record) {
         if (Objects.isNull(record)){
@@ -60,7 +61,7 @@ public class KafkaConsumer {
      */
     // 这里可以设置id,group_id,默认情况下如果不设置group_id，则会用id重写group_id，除非设置idIsGroup=false
     // 这里的配置会重写kafkaConfig里面的通用配置，比如group_id
-    @KafkaListener(id = "consumer3",topics = "test",idIsGroup = false)
+    @KafkaListener(id = "consumer3",topics = "test",idIsGroup = false,clientIdPrefix = "测试")
     public void processMessageForTes(ConsumerRecord<String, String> record) {
         if (Objects.isNull(record)){
             return;

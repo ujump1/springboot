@@ -3,6 +3,7 @@ package com.yj.springboot.service.myRestTemplate;
 
 import com.yj.springboot.service.apiTemplate.SeiRestTemplateErrorHandle;
 import com.yj.springboot.service.utils.LogUtil;
+import okhttp3.OkHttpClient;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HeaderElementIterator;
@@ -26,6 +27,7 @@ import org.apache.http.ssl.SSLContextBuilder;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -34,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -216,5 +219,22 @@ public class RestTemplateConfig {
 		converterList.add(1, new StringHttpMessageConverter(defaultCharset));
 	}
 
+
+	/****************OkHttp使用****************/
+	@Value("${OkHttpRestTemplate.connect-timeout:10000}")
+	private int connectTimeout; // 连接超时时间
+	@Value("${OkHttpRestTemplate.read-timeout:20000}")
+	private int readTimeout;  // 读取超时时间
+
+	@Bean("OkHttpUrlRestTemplate")
+	public RestTemplate creatEleCloudTemplate() {
+		OkHttpClient okHttpClient = new OkHttpClient();
+		OkHttp3ClientHttpRequestFactory factory = new OkHttp3ClientHttpRequestFactory(okHttpClient);
+		factory.setConnectTimeout(connectTimeout);
+		factory.setReadTimeout(readTimeout);
+		RestTemplate restTemplate = new RestTemplate(factory);
+		restTemplate.setErrorHandler(new SeiRestTemplateErrorHandle());
+		return restTemplate;
+	}
 
 }

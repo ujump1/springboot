@@ -114,4 +114,13 @@ public class UserTest extends BaseTest {
 		sleep(5000);
 	}
 
+
+
+	@Test
+	public void testTransactionDeleteAndSave() {
+		userService.testDeleteAndSave();
+		System.out.println("1111");
+	}
+
+
 }

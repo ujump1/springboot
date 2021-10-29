@@ -222,6 +222,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	@Transactional
+	public void testDeleteAndSave(){
+		User userExist = userService.findByCode("x");
+		userService.getDao().deleteById(userExist.getId());
+		//TransactionAspectSupport.currentTransactionStatus().flush();
+		//userService.getDao().deleteByCode("x");
+		User user1 = userService.findByCode("m");
+		User user = new User();
+		user.setCode("x");
+		user.setName("保存");
+		//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		userService.getDao().save(user);
+
+	}
+
+
 
 
 
