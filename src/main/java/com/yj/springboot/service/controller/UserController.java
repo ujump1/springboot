@@ -70,7 +70,7 @@ public class UserController {
 	}
 
 	@PostMapping("/add")
-	public ResponseModel add(User user) {
+	public ResponseModel add(@RequestBody  User user) {
 		if(ObjectUtils.isEmpty(user)){
 			return ResponseModel.ERROR("用户不能为空");
 		}

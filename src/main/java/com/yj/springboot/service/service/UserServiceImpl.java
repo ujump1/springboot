@@ -8,6 +8,7 @@ import com.yj.springboot.service.dao.UserDao;
 import com.yj.springboot.service.responseModel.ResponseModel;
 import com.yj.springboot.service.vo.BusinessActivityTypeParam;
 import org.apache.commons.lang3.ObjectUtils;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -236,6 +237,20 @@ public class UserServiceImpl implements UserService {
 		userService.getDao().save(user);
 
 	}
+
+	@Transactional
+	public void testTransactionMultiSaveVersion(User user){
+		userDao.save(user);
+		userService.testTransactionMultiSaveVersionCall(user);
+		// 在里面被修改了，需要在外面再查一下好像
+		userDao.save(user);
+	}
+
+	@Transactional
+	public void testTransactionMultiSaveVersionCall(User user){
+		userDao.save(user);
+	}
+
 
 
 

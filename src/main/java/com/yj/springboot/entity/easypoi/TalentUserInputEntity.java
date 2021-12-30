@@ -3,6 +3,7 @@ package com.yj.springboot.entity.easypoi;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
 import cn.afterturn.easypoi.excel.annotation.ExcelCollection;
+import cn.afterturn.easypoi.excel.annotation.ExcelEntity;
 import com.yj.springboot.service.utils.DateUtil;
 
 import java.io.Serializable;
@@ -23,19 +24,22 @@ public class TalentUserInputEntity implements Serializable {
     @Excel(name = "开始工作时间*",format= DateUtil.DEFAULT_DATE_FORMAT)
     private Date workTime;
 
-    @Excel(name = "民族*")
+    @Excel(name = "民族*",groupName = "3",orderNum = "2")
     private String national;
 
-    @Excel(name = "语言水平*")
+    @Excel(name = "语言水平*",groupName = "3",orderNum = "2")
     private String languageProficiency;
+
+    @Excel(name = "职位*",groupName = "3",orderNum = "2")
+    private String jobsName1;
 
     @Excel(name = "出生日期*",format= DateUtil.DEFAULT_DATE_FORMAT)
     private Date birth;
 
-    @Excel(name = "职位*")
+    @Excel(name = "职位*",groupName = "2",orderNum = "3")
     private String jobsName;
 
-    @Excel(name = "职位类型*")
+    @Excel(name = "职位类型*",groupName = "2",orderNum = "3")
     private String categoryName;
 
     @Excel(name = "薪资*")
@@ -50,7 +54,10 @@ public class TalentUserInputEntity implements Serializable {
     @ExcelCollection(name = "教育经历*")
     private List<EducationInputEntity> educationList;
 
-    @Excel(name = "特长")
+    @ExcelEntity(name = "教育经历1",show = true)
+    private ExperienceInputEntity experience1;
+
+    @Excel(name = "特长",orderNum = "1")
     private String specialty;
 
     public TalentUserInputEntity() {
@@ -166,5 +173,21 @@ public class TalentUserInputEntity implements Serializable {
 
     public void setSpecialty(String specialty) {
         this.specialty = specialty;
+    }
+
+    public ExperienceInputEntity getExperience1() {
+        return experience1;
+    }
+
+    public void setExperience1(ExperienceInputEntity experience1) {
+        this.experience1 = experience1;
+    }
+
+    public String getJobsName1() {
+        return jobsName1;
+    }
+
+    public void setJobsName1(String jobsName1) {
+        this.jobsName1 = jobsName1;
     }
 }

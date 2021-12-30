@@ -1,5 +1,6 @@
 package com.yj.springboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yj.springboot.entity.base.BaseEntity;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class User extends BaseEntity {
     //@Column(name = "age")
     private Integer age;
 
+    @Version
+    private Integer gender;
+
     @Transient
     protected String m ;
 
@@ -35,10 +39,12 @@ public class User extends BaseEntity {
         this.code = code;
     }
 
+    //@JsonProperty("Name") // 当放到set这里的时候，接收和返回的都是以这个字段为准 set get 都可以
     public String getName() {
         return name;
     }
 
+    //@JsonProperty("Name") // 当放到set这里的时候，接收和返回的都是以这个字段为准
     public void setName(String name) {
         this.name = name;
     }
@@ -65,5 +71,13 @@ public class User extends BaseEntity {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
     }
 }

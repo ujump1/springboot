@@ -123,4 +123,15 @@ public class UserTest extends BaseTest {
 	}
 
 
+	@Test
+	public void testTransactionMultiSaveVersion() {
+		User user = new User();
+		user.setId("11123413232");
+		user.setCode("13213");
+		user.setGender(2);
+		userService.testTransactionMultiSaveVersion(user);
+		System.out.println("1111");
+	}
+
+
 }

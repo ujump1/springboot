@@ -7,12 +7,15 @@ import cn.afterturn.easypoi.excel.entity.ImportParams;
 import com.yj.springboot.entity.easypoi.ExperienceInputEntity;
 import com.yj.springboot.entity.easypoi.TalentUserInputEntity;
 import com.yj.springboot.entity.search.Search;
+import com.yj.springboot.service.config.MyExcelExportStylerImpl;
 import com.yj.springboot.service.responseModel.ResultData;
 import com.yj.springboot.service.utils.DateUtil;
 import com.yj.springboot.service.utils.JsonUtils;
 import com.yj.springboot.service.utils.LogUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
@@ -85,6 +88,7 @@ public class ExcelController {
 		experienceInputEntity2.setDepartment("部门2");
 		experienceList.add(experienceInputEntity2);
 		talentUserInputEntity.setExperienceList(experienceList);
+		talentUserInputEntity.setExperience1(experienceInputEntity2);
 		talentUserInputEntities.add(talentUserInputEntity);
 		// 第二条
 		TalentUserInputEntity talentUserInputEntity2 = new TalentUserInputEntity();
@@ -96,16 +100,23 @@ public class ExcelController {
 			Workbook workbook;
 			String fileName;
 			fileName = String.format("简历_%s", DateUtil.formatDate(new Date(), DateUtil.DEFAULT_TIME_FORMAT));
-			workbook = ExcelExportUtil.exportExcel(new ExportParams(fileName, fileName), // sheetName有中文就不行
+			// 设置格式
+			ExportParams exportParams =new ExportParams(fileName, fileName);
+			exportParams.setStyle(MyExcelExportStylerImpl.class);
+			workbook = ExcelExportUtil.exportExcel(exportParams, // sheetName有中文就不行
 					TalentUserInputEntity.class, talentUserInputEntities);
 			//加载文件
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			workbook.write(stream);
 			workbook.close();
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\".xlsx",new String( fileName.getBytes("UTF-8"), "ISO8859-1" )))
-					.header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
-					.body(new ByteArrayResource(stream.toByteArray()));
+//			return ResponseEntity.ok()
+//					.header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\".xlsx",new String( fileName.getBytes("UTF-8"), "ISO8859-1" )))
+//					.header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
+//					.body(new ByteArrayResource(stream.toByteArray()));
+			 	return ResponseEntity.ok()
+								.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx\"")
+								.header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
+								.body(new ByteArrayResource(stream.toByteArray()));
 		} catch (IOException e) {
 			LogUtil.error("下载文件失败", e);
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -121,7 +132,74 @@ public class ExcelController {
 	@PostMapping(path = "export2")
 	@ApiOperation(value = "导出2", notes = "导出excel")
 	public ResponseEntity<ByteArrayResource> export2(@RequestBody @Valid Search search){
-		return null;
+		// 组装数据
+		// 第一条
+		List<TalentUserInputEntity> talentUserInputEntities = new ArrayList<>();
+		TalentUserInputEntity talentUserInputEntity = new TalentUserInputEntity();
+		talentUserInputEntity.setName("余江");
+		talentUserInputEntity.setGender(0);
+		talentUserInputEntity.setBirth(DateUtil.parseDate("1996-11-05",DateUtil.DEFAULT_DATE_FORMAT));
+		List<ExperienceInputEntity> experienceList = new ArrayList<>();
+		ExperienceInputEntity experienceInputEntity = new ExperienceInputEntity();
+		experienceInputEntity.setCompanyName("公司1");
+		experienceInputEntity.setDepartment("部门1");
+		experienceList.add(experienceInputEntity);
+		ExperienceInputEntity experienceInputEntity2 = new ExperienceInputEntity();
+		experienceInputEntity2.setCompanyName("公司2");
+		experienceInputEntity2.setDepartment("部门2");
+		experienceList.add(experienceInputEntity2);
+		talentUserInputEntity.setExperienceList(experienceList);
+		talentUserInputEntity.setExperience1(experienceInputEntity2);
+		talentUserInputEntities.add(talentUserInputEntity);
+		// 第二条
+		TalentUserInputEntity talentUserInputEntity2 = new TalentUserInputEntity();
+		talentUserInputEntity2.setName("余江2");
+		talentUserInputEntity2.setGender(1);
+		talentUserInputEntity2.setBirth(DateUtil.parseDate("1996-11-05",DateUtil.DEFAULT_DATE_FORMAT));
+		talentUserInputEntities.add(talentUserInputEntity2);
+		try {
+			Workbook workbook;
+			String fileName;
+			fileName = String.format("简历_%s", DateUtil.formatDate(new Date(), DateUtil.DEFAULT_TIME_FORMAT));
+			// 设置格式
+			ExportParams exportParams =new ExportParams(fileName, fileName);
+			exportParams.setStyle(MyExcelExportStylerImpl.class);
+			workbook = ExcelExportUtil.exportExcel(exportParams, // sheetName有中文就不行
+					TalentUserInputEntity.class, talentUserInputEntities);
+			// 添加一行隐藏行 给导入的时候前端用
+			Sheet sheet = workbook.getSheetAt(0);
+			// 下移动一行
+			sheet.shiftRows( 0, sheet.getLastRowNum(), 1,true,false);
+			Row rowHidden = sheet.createRow(0); // 创建一行
+			rowHidden.setZeroHeight(true); // 隐藏
+			rowHidden.createCell(0).setCellValue("batchNumber");
+			rowHidden.createCell(1).setCellValue("beforeMaterialCode");
+			rowHidden.createCell(2).setCellValue("productName");
+			rowHidden.createCell(3).setCellValue("productMergeName");
+			rowHidden.createCell(4).setCellValue("rate");
+			rowHidden.createCell(5).setCellValue("quantity");
+			rowHidden.createCell(6).setCellValue("taxPrice");
+			rowHidden.createCell(7).setCellValue("taxAmount");
+			rowHidden.createCell(8).setCellValue("discountAmount");
+			rowHidden.createCell(9).setCellValue("specification");
+			rowHidden.createCell(10).setCellValue("projectUnit");
+			rowHidden.createCell(11).setCellValue("remark");
+			//加载文件
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			workbook.write(stream);
+			workbook.close();
+//			return ResponseEntity.ok()
+//					.header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\".xlsx",new String( fileName.getBytes("UTF-8"), "ISO8859-1" )))
+//					.header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
+//					.body(new ByteArrayResource(stream.toByteArray()));
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx\"")
+					.header(HttpHeaders.CONTENT_TYPE, "application/vnd.ms-excel")
+					.body(new ByteArrayResource(stream.toByteArray()));
+		} catch (IOException e) {
+			LogUtil.error("下载文件失败", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 	/**
