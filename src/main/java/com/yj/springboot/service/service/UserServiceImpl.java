@@ -8,6 +8,8 @@ import com.yj.springboot.service.dao.UserDao;
 import com.yj.springboot.service.responseModel.ResponseModel;
 import com.yj.springboot.service.vo.BusinessActivityTypeParam;
 import org.apache.commons.lang3.ObjectUtils;
+import org.checkerframework.checker.units.qual.A;
+import org.hibernate.service.spi.ServiceException;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -74,6 +76,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 	public void add(String id) {
+		if(id.equals("203")){
+			System.out.println("异常");
+			throw new ServiceException("异常");
+		}
 		List<User> users= findAll();
 		User user = new User();
 		user.setId(null);
@@ -137,7 +143,7 @@ public class UserServiceImpl implements UserService {
 		//userDao.deleteById("123");  // 测试回滚后还能删除数据吗
 		System.out.println("123");
 	}
-	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常。
+	@Transactional // 这里加了注解之后，testTransactional(也加了注解） 调用这个方法时，这个方法如果事务回退必须要抛异常或者返回失败，testTransactional根据返回的失败手动回滚。
 	public void testTransactionalCall1(){
 		User user = new User();
 		user.setName("测试事务调用");
@@ -203,6 +209,7 @@ public class UserServiceImpl implements UserService {
 	 * @return
 	 */
 	public Integer sum1(){
+		System.out.println(Thread.currentThread().getId());
 		int a = 0;
 		for(int i=0;i<50;i++){
 			a=a + i;
@@ -223,6 +230,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	@Autowired
+	private UtilService utilService;
 	@Transactional
 	public void testDeleteAndSave(){
 		User userExist = userService.findByCode("x");
@@ -231,24 +240,39 @@ public class UserServiceImpl implements UserService {
 		//userService.getDao().deleteByCode("x");
 		User user1 = userService.findByCode("m");
 		User user = new User();
-		user.setCode("x");
+		user.setCode("x1");
 		user.setName("保存");
-		//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		utilService.testAsync();
+		TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
 		userService.getDao().save(user);
 
 	}
 
+
+
 	@Transactional
-	public void testTransactionMultiSaveVersion(User user){
+	public void testTransactionMultiSaveVersion(){
+		User user = userService.findOne("11123413232");
+		user.setName("123");
 		userDao.save(user);
-		userService.testTransactionMultiSaveVersionCall(user);
+		testTransactionMultiSaveVersionCall();
 		// 在里面被修改了，需要在外面再查一下好像
-		userDao.save(user);
+		System.out.println("123");
+	}
+
+	public void testTransactionMultiSaveVersionCall(){
+		User user1 = userService.findOne("11123413232");
+		user1.setName("456");
+		userDao.save(user1);
 	}
 
 	@Transactional
-	public void testTransactionMultiSaveVersionCall(User user){
-		userDao.save(user);
+	public void testUpdate(){
+		User user1 = userService.findOne("11123413232");
+		//userDao.updateGender1();
+		userDao.updateGender2();
+		User user2 = userService.findOne("11123413232");
+		System.out.println("123");
 	}
 
 

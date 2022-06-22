@@ -168,6 +168,8 @@ public class ExcelController {
 					TalentUserInputEntity.class, talentUserInputEntities);
 			// 添加一行隐藏行 给导入的时候前端用
 			Sheet sheet = workbook.getSheetAt(0);
+			// 重新设置冻结窗格
+			sheet.createFreezePane(0,2,0,2);
 			// 下移动一行
 			sheet.shiftRows( 0, sheet.getLastRowNum(), 1,true,false);
 			Row rowHidden = sheet.createRow(0); // 创建一行

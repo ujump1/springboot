@@ -12,12 +12,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.test.annotation.Rollback;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -64,6 +62,7 @@ public class UserTest extends BaseTest {
 	public void testAsync() throws ExecutionException, InterruptedException {
 		List<Future<Integer>> futures = new ArrayList<>();
 		for(int i =0;i<10;i++) {
+			// 主要，testAsync 有事务注解的话就必须注入自己调用或不在同一个类中，或者使用一个注解（网上找)开启
 			Future<Integer> future = userService.sum();
 			futures.add(future);
 		}
@@ -117,21 +116,28 @@ public class UserTest extends BaseTest {
 
 
 	@Test
-	public void testTransactionDeleteAndSave() {
+	public void testTransactionDeleteAndSave() throws InterruptedException {
 		userService.testDeleteAndSave();
+		sleep(3000);
 		System.out.println("1111");
 	}
 
 
 	@Test
 	public void testTransactionMultiSaveVersion() {
-		User user = new User();
-		user.setId("11123413232");
-		user.setCode("13213");
-		user.setGender(2);
-		userService.testTransactionMultiSaveVersion(user);
+
+		userService.testTransactionMultiSaveVersion();
 		System.out.println("1111");
 	}
 
+	@Test
+	public void testUpdateDate(){
+		userDao.updateBirthDay(new Date(),"0001");
+	}
+
+	@Test
+	public void testUpdate(){
+		userService.testUpdate();
+	}
 
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title>记账凭证</title>
+    <style type="text/css">
+        @page{
+            size:1114px
+        }
+        body {
+            font-family: SimSun;  /*支持中文字体， SimSun宋体*/
+        }
+        table {
+            margin: auto;
+            width: 100%;
+            border-collapse: collapse;
+
+        }
+
+        tr {
+            height: 24px;
+            line-height: 24px;
+
+        }
+
+        td {
+            border: 0.5px solid #444444;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+<div style="width: 1000px;height: auto; " align="center">
+    <h2 > 记账凭证 </h2>
+    <table style="width: 1000px;height: auto" cellpadding="1" cellspacing="1" border="0">
+        <thead  >
+        <tr>
+            <th align="left">公司名称:${head.corporationName}</th>
+            <th align="left">业务来源编号:${head.businessSourceOrderNo}</th>
+            <th align="left">${head.accountDate}</th>
+            <th align="left">凭证号:${head.erpAccountNo}</th>
+            <th align="left">币种:${head.currencyName}</th>
+        </tr>
+        </thead>
+    </table>
+    <table style="width: 1000px;height: auto" cellpadding="1" cellspacing="0" border="1">
+        <thead >
+        <tr>
+            <th>摘要</th>
+            <th>会计科目</th>
+            <th>成本中心</th>
+            <th>供应商/客户名称</th>
+            <th>借方金额</th>
+            <th>贷方金额</th>
+        </tr>
+        </thead>
+        <tbody  >
+        <#list items as item >
+        <tr >
+            <td>${item.note!}</td>
+            <td>${item.ledgerAccountName!}</td>
+            <td>${item.costCenterName!}</td>
+            <td>${item.csName!}</td>
+            <td>${item.debitAmount!}</td>
+            <td>${item.lendAmount!}</td>
+        </tr>
+        </#list>
+        </tbody>
+        <tfoot >
+        <tr>
+            <td colspan="4" align="left">合计金额:${head.upCaseAmount}</td>
+            <td>${head.totalDebitAmount}</td>
+            <td>${head.totalLendAmount}</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title></title>
+    <style type="text/css">
+        body {
+            font-family: SimSun; /*支持中文字体， SimSun宋体*/
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div style="width: 500px;height: auto" > 1111111111111111111111111111111111111111111111111  111111111111111</div>
+    <table style="width: 500px;height: auto" cellpadding="1" cellspacing="1">
+        <thead>
+        测试
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>地址</th>
+            <th>生日</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <#list userList as user >
+        <tr>
+            <#--防止user里没有name-->
+            <td>${user.name!}</td>
+            <td>${user.age!}</td>
+            <td>
+                <#--防止user的addressVoList为空-->
+                <#list user.addressVoList!>
+                <#items as address>
+                ${address.name!} <#sep >,
+            </#items>
+            <#else >无地址
+        </#list>
+        </td>
+        <td>
+            ${(user.birthday?string("yyyy-MM-dd"))!"日期不存在"}
+        </td>
+        <td>
+            <#if user?is_even_item>偶数
+            <#else> 奇数
+        </#if>
+        ${user?counter}
+        </td>
+        </tr>
+        </#list>
+    </table>
+</div>
+</body>
+</html>
+

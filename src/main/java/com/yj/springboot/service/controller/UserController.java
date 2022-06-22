@@ -14,6 +14,8 @@ import com.yj.springboot.service.utils.LogUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.ObjectUtils;
@@ -27,6 +29,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 /**
  * @Author : Yj
@@ -79,12 +85,47 @@ public class UserController {
 		return responseModel;
 	}
 
+
 	@GetMapping("/addAll")
 	@Transactional(rollbackFor = Exception.class)
 	public void addAll() {
 		for(int i = 100;i<105;i++){
 			// 每次都会开启新事务哈，会将外面的事务挂起
 			userService.add(String.valueOf(i));
+		}
+	}
+
+	@Autowired
+	@Qualifier("taskExecutor")
+	private ThreadPoolTaskExecutor executor;
+	@GetMapping("/addAll1")
+	@Transactional(rollbackFor = Exception.class)
+	public void addAll1() {
+		List<FutureTask<Integer>> futures = new ArrayList<>();
+		for (int i = 200; i < 205; i++) {
+			int finalI = i;
+			FutureTask<Integer> future = (FutureTask<Integer>) executor.submit(new Callable<Integer>() {
+				@Override
+				public Integer call() {
+					try {
+						//  异步可以开启事务的
+						userService.add(String.valueOf(finalI));
+					}catch (Exception e){
+						LogUtil.error("异步异常");
+					}
+					return 1;
+				}
+			});
+			futures.add(future);
+		}
+		for (Future<Integer> future : futures) {
+			try {
+				System.out.println(future.get());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

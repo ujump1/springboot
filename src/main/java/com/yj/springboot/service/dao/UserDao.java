@@ -7,6 +7,9 @@ import com.yj.springboot.service.dao.ext.UserDaoExt;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
 
 /**
  * @author YJ
@@ -30,6 +33,42 @@ public interface UserDao extends BaseEntityDao<User> ,UserDaoExt  {
 
 
 	@Modifying
+	@Transactional
 	@Query(value = "delete from user where code=?1",nativeQuery = true)
 	 void deleteByCode(String code);
+
+
+	@Modifying
+	@Transactional
+	@Query(value = "update user u set u.birth_day = ?1 where u.code=?2",nativeQuery = true)
+	void updateBirthDay(Date birthDay, String code);
+
+
+
+
+	@Modifying
+	@Transactional
+	@Query(value = "update user u set u.gender =u.gender+1  where u.gender=7",nativeQuery = true)
+	void updateGender();
+
+	//
+	@Modifying
+	@Transactional
+	@Query(value = "update user u set u.gender = 3  where u.gender=7",nativeQuery = true)
+	void updateGender1();
+
+
+	//
+	@Modifying
+	@Transactional
+	@Query(value = "update user u set u.name = '123'  where u.gender=7",nativeQuery = true)
+	void updateGender2();
+
+	@Modifying
+	@Transactional
+	@Query(value = "update user u set u.name = '123'  where u.gender=7",nativeQuery = true)
+	void updateGender3();
+
+
+
 }

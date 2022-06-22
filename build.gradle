@@ -120,6 +120,18 @@ dependencies {
 
 
 
+    // https://mvnrepository.com/artifact/org.xhtmlrenderer/flying-saucer-pdf-itext5
+    implementation group: 'org.xhtmlrenderer', name: 'flying-saucer-pdf-itext5', version: '9.1.22'
+
+    // https://mvnrepository.com/artifact/org.freemarker/freemarker
+    implementation group: 'org.freemarker', name: 'freemarker', version: '2.3.+'
+
+    implementation("com.itextpdf.tool:xmlworker:5.+")
+
+
+
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
+
 
 
 

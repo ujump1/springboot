@@ -2,6 +2,7 @@ package com.yj.springboot.service.controller;
 
 import com.yj.springboot.service.responseModel.ResultData;
 import com.yj.springboot.service.utils.LogUtil;
+import com.yj.springboot.service.utils.ZipUtils;
 import com.yj.springboot.service.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.*;
 import java.util.Base64;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 @RequestMapping(value = "file")
@@ -151,5 +153,58 @@ public class FileController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 下载
+	 * @param docId 文档id
+	 * 这里ByteArrayResource为例,使用base64字符串，也可以用其他的哈，直接使用文件也行
+	 */
+	@GetMapping("downloadZip")
+	@ApiOperation(value = "下载", notes = "下载")
+	ResponseEntity<ByteArrayResource> downloadZip(@RequestParam("docId") @NotBlank String docId) throws IOException {
+		// 获取文件
+		File file = new File("C:\\Users\\YJ\\Desktop\\QQ图片20210629133124.jpg");
+		FileInputStream fin = null;
+		fin = new FileInputStream(file);
+		byte[] buff = new byte[fin.available()];
+		fin.read(buff);
+		// 获取base64编码的字符串（这里演示的是能拿到base64字符串，可以直接用file)
+		String base64Source = Base64.getEncoder().encodeToString(buff);
+		if(StringUtils.isEmpty(base64Source)){
+			LogUtil.error("下载失败:"+docId);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		// 获取文件名称
+		String fileName1 = "QQ图片20210629133124.jpg";
+		String fileName2 = "QQ图片20210629133123.jpg";
+		// 获取文件字节数组(这里其实可以直接用file得到,多了一步加密解密，是为了演示只能拿到base64字符串的情况)
+		byte[] bytes = Base64Utils.decodeFromString(base64Source);
+		// 输出
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); // 如果是文件的话输出流直接用flieOutputStream ByteArrayOutputStream可以理解为暂存在内存中
+		ZipOutputStream zos = new ZipOutputStream(byteArrayOutputStream);
+		// 这里不用添加两次模拟for循环多个文件
+		try {
+			ZipUtils.zipFile(fileName1, new ByteArrayInputStream(bytes), zos);
+			ZipUtils.zipFile(fileName2, new ByteArrayInputStream(bytes), zos);
+			zos.flush();
+			zos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+		try {
+			headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"",new String( "测试ZIP.zip".getBytes("UTF-8"), "ISO8859-1" )));
+		} catch (UnsupportedEncodingException e) {
+			// 文件名转换失败
+			LogUtil.error("发票下载失败:文件名转换失败"+"测试ZIP.zip");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+		return ResponseEntity
+				.ok()
+				.headers(headers)
+				.contentType(MediaType.parseMediaType("application/octet-stream;charset=UTF-8"))
+				.body(new ByteArrayResource(byteArrayOutputStream.toByteArray()));
 	}
 }

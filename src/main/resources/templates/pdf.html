@@ -1,0 +1,160 @@
+<html>
+<head>
+    <title>开票通知单</title>
+    <style type="text/css">
+        body {
+            margin-left: 45px;
+            margin-right: 45px;
+            font-family: SimSun;
+            font-size: 10px;
+        }
+
+        table {
+            margin: auto;
+            width: 100%;
+            border-collapse: collapse;
+            border: 0.5px solid #444444;
+        }
+
+        tr {
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+        }
+
+        td {
+            border: 0.5px solid #444444;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="title">
+        开票通知单
+    </div>
+    <div>
+        <table>
+            <tr>
+                <td colspan="3">发票类型</td>
+                <td colspan="6">${mm!""}</td>
+                <td colspan="3">开票总金额</td>
+                <td colspan="3">${head.totalInvoiceAmount?string('0.00')}</td>
+                <td colspan="3">开票总税额</td>
+                <td colspan="3">${sumTax}</td>
+            </tr>
+            <tr style="height: 48px;">
+                <td colspan="3">供应商名称</td>
+                <td colspan="6">${head.supplierName}</td>
+                <td colspan="3">发票备注</td>
+                <td colspan="9">${head.invoiceRemark!""}</td>
+            </tr>
+            <tr>
+                <td colspan="7">税务信息</td>
+                <td colspan="7">采购方信息</td>
+                <td colspan="7">销售方信息（农产品）</td>
+            </tr>
+            <tr>
+                <td colspan="7">名称</td>
+                <#if isFarming >
+                <td colspan="7"></td>
+                <td colspan="7">${taxpayerName}</td>
+                <#else>
+                <td colspan="7">${taxpayerName}</td>
+                <td colspan="7"></td>
+                </#if>
+            </tr>
+            <tr>
+                <td colspan="7">纳税人识别号</td>
+                <#if isFarming >
+                <td colspan="7"></td>
+                <td colspan="7">${taxpayerNumber}</td>
+                <#else>
+                <td colspan="7">${taxpayerNumber}</td>
+                <td colspan="7"></td>
+                </#if>
+            </tr>
+            <tr>
+                <td colspan="7">开户行及账号</td>
+                <#if isFarming >
+                <td colspan="7"></td>
+                <td colspan="7">${bankAccount!""}</td>
+                <#else>
+                <td colspan="7">${bankAccount!""}</td>
+                <td colspan="7"></td>
+                </#if>
+            </tr>
+            <tr>
+                <td colspan="7">地址及电话</td>
+                <#if isFarming >
+                <td colspan="7"></td>
+                <td colspan="7">${address!""}</td>
+                <#else>
+                <td colspan="7">${address!""}</td>
+                <td colspan="7"></td>
+                </#if>
+            </tr>
+            <tr>
+                <td colspan="10">电子发票</td>
+                <td colspan="11">纸质发票</td>
+            </tr>
+            <tr style="text-align: left;">
+                <td colspan="10">
+                    1.请下载本通知单PDF文件<br/>
+                    2.开具电子发票<br/>
+                    3.将开票通知单PDF及电子发票PDF发送至以下邮箱：<br />
+                    ${receiveEmail!""}<br/>
+                </td>
+                <td colspan="11">
+                    1.请打印本通知单PDF文件<br/>
+                    2.开具纸质发票<br/>
+                    3.将纸质开票通知单及纸质发票邮寄至以下地址：<br/>
+                    ${receiveAddress!""}<br/>
+                </td>
+            </tr>
+            <tr style="height: 48px;">
+                <td colspan="21">发票明细清单</td>
+            </tr>
+            <tr>
+                <td colspan="1">序号</td>
+                <td colspan="3">订单号</td>
+                <td colspan="3">入库单号</td>
+                <td colspan="3">物料描述</td>
+                <td colspan="2">数量</td>
+                <td colspan="2">单价</td>
+                <td colspan="2">税率</td>
+                <td colspan="2">税额</td>
+                <td colspan="3">价税合计</td>
+            </tr>
+            <#if head.hasOrder >
+            <#list orderItems as item>
+            <tr>
+                <td colspan="1">${item.itemNumber}</td>
+                <td colspan="3">${item.purchaseOrderNo}</td>
+                <td colspan="3">${item.purchaseOrder.inboundNo}</td>
+                <td colspan="3">${item.purchaseOrder.materialName}</td>
+                <td colspan="2">${item.purchaseOrder.orderQty?string('0.00')}</td>
+                <td colspan="2">${item.purchaseOrder.taxPrice?string('0.00')}</td>
+                <td colspan="2">${item.purchaseOrder.taxRate}</td>
+                <td colspan="2">${(item.purchaseOrder.tax)?string('0.00')}</td>
+                <td colspan="3">${item.invoiceAmount?string('0.00')}</td>
+            </tr>
+            </#list>
+            </#if>
+            <tr style="height: 36px;">
+                <td colspan="18">合计开票金额</td>
+                <td colspan="3">${head.totalInvoiceAmount?string('0.00')}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

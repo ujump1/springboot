@@ -1,10 +1,12 @@
 package com.yj.springboot.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yj.springboot.entity.base.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 @Table
@@ -17,13 +19,16 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "birth_day")
+    private Date birthDay;
+
     // 加了Transient表示这个字段不会保存也不会从数据库中查找
     @Transient
     //@Column(name = "age")
     private Integer age;
 
-    @Version
-    private Integer gender;
+//    @Version
+    private Integer gender = 1;
 
     @Transient
     protected String m ;
@@ -79,5 +84,13 @@ public class User extends BaseEntity {
 
     public void setGender(Integer gender) {
         this.gender = gender;
+    }
+
+    public Date getBirthDay() {
+        return birthDay;
+    }
+
+    public void setBirthDay(Date birthDay) {
+        this.birthDay = birthDay;
     }
 }

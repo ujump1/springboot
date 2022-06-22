@@ -10,6 +10,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +43,7 @@ public abstract class AbstractUrlTemplateOperate implements IUrlRestTemplateOper
 		return getRestTemplate().exchange(url, HttpMethod.GET, httpEntity, clz).getBody();
 	}
 
+	// 	Result<List<BillData>> result = urlRestTemplateOperate.getByUrl(url+billMethod,new ParameterizedTypeReference<Result<List<BillData>>>() {},param);
 	public <T> T getByUrl(String url, ParameterizedTypeReference<T> responseType, Map<String, String> params) {
 		HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(null, getHttpHeaders());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);

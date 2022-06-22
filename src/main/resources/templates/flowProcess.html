@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+    <title>流程信息</title>
+    <style type="text/css">
+        @page{
+            size:1114px
+        }
+        body {
+            font-family: SimSun;  /*支持中文字体， SimSun宋体*/
+        }
+        table {
+            margin: auto;
+            width: 100%;
+            border-collapse: collapse;
+
+        }
+
+        tr {
+            height: 24px;
+            line-height: 24px;
+
+        }
+
+        td {
+            border: 0.5px solid #444444;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+<div style="width: 1000px;height: auto; " align="center">
+    <h2 > 流程信息 </h2>
+    <table style="width: 1000px;height: auto" cellpadding="1" cellspacing="1" border="0">
+        <thead  >
+        <tr>
+            <th align="left">公司名称:${corporationName}</th>
+            <th align="left">业务来源编号:${businessSourceOrderNo}</th>
+        </tr>
+        </thead>
+    </table>
+    <table style="width: 1000px;height: auto" cellpadding="1" cellspacing="0" border="1">
+        <thead >
+        <tr>
+            <th>节点名称</th>
+            <th>处理人</th>
+            <th>时间</th>
+            <th>处理摘要</th>
+        </tr>
+        </thead>
+        <tbody align="center" >
+        <#list flowTranceInfoList as info >
+        <!--  流程启动  /-->
+        <tr >
+            <td>流程启动</td>
+            <td>${info.flowInstance.startUserName!}</td>
+            <td>${info.flowInstance.startDateFormat?string('yyyy-MM-dd hh:mm:ss')}</td>
+            <td></td>
+        </tr>
+        <#list info.flowHistoryList as item >
+        <tr >
+            <td>${item.nodeId!}-${item.nodeName!}(${item.operationName!})</td>
+            <td>${item.executorName!}(${item.executorAccount!})</td>
+            <td>${item.createDateFormat?string('yyyy-MM-dd hh:mm:ss')}</td>
+            <td>${item.auditOpinion!}</td>
+        </tr>
+        </#list>
+        <#if info.flowInstance.whetherEnd>
+        <tr>
+            <td colspan="4" align="center">流程结束</td>
+        </tr>
+        </#if>
+        </#list>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
+
