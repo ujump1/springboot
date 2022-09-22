@@ -39,6 +39,7 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.HostnameVerifier;
@@ -193,7 +194,8 @@ public class RestTemplateConfig {
 		//我们采用RestTemplate内部的MessageConverter
 		//重新设置StringHttpMessageConverter字符集，解决中文乱码问题
 		modifyDefaultCharset(restTemplate);
-
+        // 删除xml，不然在发送请求得时候会设置Accept 为xml,导致返回给我们的contentType为xml，解析出错
+		deleteXml(restTemplate);
 		//设置错误处理器
 		restTemplate.setErrorHandler(new SeiRestTemplateErrorHandle());
 
@@ -219,6 +221,23 @@ public class RestTemplateConfig {
 		converterList.add(1, new StringHttpMessageConverter(defaultCharset));
 	}
 
+
+	/**
+	 * 删除xml（如果有的话）
+	 */
+	private void deleteXml(RestTemplate restTemplate) {
+		List<HttpMessageConverter<?>> converterList = restTemplate.getMessageConverters();
+		HttpMessageConverter<?> converterTarget = null;
+		for (HttpMessageConverter<?> item : converterList) {
+			if (MappingJackson2XmlHttpMessageConverter.class == item.getClass()) {
+				converterTarget = item;
+				break;
+			}
+		}
+		if (null != converterTarget) {
+			converterList.remove(converterTarget);
+		}
+	}
 
 	/****************OkHttp使用****************/
 	@Value("${OkHttpRestTemplate.connect-timeout:10000}")
