@@ -7,6 +7,7 @@ import com.yj.springboot.entity.search.PageResult;
 import com.yj.springboot.service.dao.base.impl.BaseEntityDaoImpl;
 import com.yj.springboot.service.dao.ext.UserDaoExt;
 import com.yj.springboot.service.utils.PageQueryUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,8 @@ public class UserDaoImpl extends  BaseEntityDaoImpl<User> implements UserDaoExt 
 	public UserDaoImpl(EntityManager entityManager) {
 		super(User.class, entityManager);
 	}
+//	@Autowired
+//	private EntityManager entityManager; 这样也行
 
 	@Override
 	public PageResult<User> findByPageByPageQueryUtil(PageInfo pageInfo) {

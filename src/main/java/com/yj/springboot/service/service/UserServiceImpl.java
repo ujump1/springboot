@@ -8,6 +8,7 @@ import com.yj.springboot.service.dao.UserDao;
 import com.yj.springboot.service.responseModel.ResponseModel;
 import com.yj.springboot.service.vo.BusinessActivityTypeParam;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.tools.ant.taskdefs.Sleep;
 import org.checkerframework.checker.units.qual.A;
 import org.hibernate.service.spi.ServiceException;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -31,6 +32,8 @@ import javax.persistence.RollbackException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+
+import static java.lang.Thread.sleep;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -208,11 +211,17 @@ public class UserServiceImpl implements UserService {
 	 * 异步方式2
 	 * @return
 	 */
-	public Integer sum1(){
+	public Integer sum1() {
 		System.out.println(Thread.currentThread().getId());
 		int a = 0;
 		for(int i=0;i<50;i++){
 			a=a + i;
+		}
+		System.out.println("计算结果"+a);
+		try {
+			sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		return a;
 	}

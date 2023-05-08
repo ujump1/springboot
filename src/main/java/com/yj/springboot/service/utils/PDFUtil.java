@@ -89,4 +89,32 @@ public class PDFUtil {
 			IOUtils.closeQuietly(outputStream);
 		}
 	}
+
+
+	/**
+	 * 生成pdf文件
+	 */
+	public void  generatePDF(String htmlData,String fileUrl) {
+		File file = new File(fileUrl);
+		FileOutputStream outputStream = null;
+		try {
+			outputStream = new FileOutputStream(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		ITextRenderer renderer = new ITextRenderer();
+		try {
+			ITextFontResolver fontResolver = renderer.getFontResolver();
+			// 解决中文乱码问题，fontPath为中文字体地址
+			fontResolver.addFont(FONT, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+			renderer.setDocumentFromString(htmlData);
+			renderer.layout();
+			renderer.createPDF(outputStream);
+		} catch (DocumentException | IOException e) {
+			LogUtil.error("生成pdf失败:",e);
+		} finally {
+			renderer.finishPDF();
+			IOUtils.closeQuietly(outputStream);
+		}
+	}
 }

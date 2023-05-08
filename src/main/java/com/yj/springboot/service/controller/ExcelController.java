@@ -4,8 +4,10 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.ImportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import com.yj.springboot.entity.easypoi.ExperienceInputEntity;
 import com.yj.springboot.entity.easypoi.TalentUserInputEntity;
+import com.yj.springboot.entity.search.PageInfo;
 import com.yj.springboot.entity.search.Search;
 import com.yj.springboot.service.config.MyExcelExportStylerImpl;
 import com.yj.springboot.service.responseModel.ResultData;
@@ -14,14 +16,13 @@ import com.yj.springboot.service.utils.JsonUtils;
 import com.yj.springboot.service.utils.LogUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.http.client.utils.DateUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +34,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping(value = "excel")
@@ -62,7 +64,7 @@ public class ExcelController {
 		return ResultData.success();
 	}
 	/**
-	 * 导出
+	 * 导出(隐藏行）
 	 *
 	 * @param search   查询参数
 	 * @param response http响应
@@ -101,7 +103,7 @@ public class ExcelController {
 			String fileName;
 			fileName = String.format("简历_%s", DateUtil.formatDate(new Date(), DateUtil.DEFAULT_TIME_FORMAT));
 			// 设置格式
-			ExportParams exportParams =new ExportParams(fileName, fileName);
+			ExportParams exportParams =new ExportParams(fileName, fileName, ExcelType.XSSF);
 			exportParams.setStyle(MyExcelExportStylerImpl.class);
 			workbook = ExcelExportUtil.exportExcel(exportParams, // sheetName有中文就不行
 					TalentUserInputEntity.class, talentUserInputEntities);
@@ -162,7 +164,7 @@ public class ExcelController {
 			String fileName;
 			fileName = String.format("简历_%s", DateUtil.formatDate(new Date(), DateUtil.DEFAULT_TIME_FORMAT));
 			// 设置格式
-			ExportParams exportParams =new ExportParams(fileName, fileName);
+			ExportParams exportParams =new ExportParams(fileName, fileName, ExcelType.XSSF);
 			exportParams.setStyle(MyExcelExportStylerImpl.class);
 			workbook = ExcelExportUtil.exportExcel(exportParams, // sheetName有中文就不行
 					TalentUserInputEntity.class, talentUserInputEntities);
@@ -215,6 +217,68 @@ public class ExcelController {
 	@ApiOperation(value = "导出1", notes = "导出excel")
 	public ResponseEntity<ByteArrayResource> export1(HttpRequest request, HttpServletResponse response){
 		return null;
+	}
+
+	/**
+	 * 大数据导入,使用的cn.afterturn.easypoi.excel为4.2.0
+	 *
+	 * @param search   查询条件
+	 * @param response
+	 * @return
+	 */
+	@PostMapping(path = "export3")
+	@ApiOperation(value = "导出3", notes = "导出excel")
+	public ResponseEntity<ByteArrayResource> export3(Search search, HttpServletResponse response) {
+		//文件名称
+		String fileName = "粘贴单签收记录_"
+				+ DateUtils.formatDate(new Date(), "yyyyMMddHHmmss") + ".xlsx";
+		//excel导出的表头
+		ExportParams params = new ExportParams("粘贴单签收记录", "粘贴单签收记录", ExcelType.XSSF);
+		// 样式
+		params.setStyle(MyExcelExportStylerImpl.class);
+
+		// 获取导出数据
+		int page = 1;
+		PageInfo pageInfo = new PageInfo();
+		pageInfo.setPage(page++);
+		pageInfo.setRows(1500);
+//		PageResult<DocumentSignRecord> pageResult = findByPage(search);
+//		IWriter<Workbook> writer = ExcelExportUtil.exportBigExcel(params, DocumentSignRecord.class);
+//		AtomicInteger no = new AtomicInteger(1);
+//		while (CollectionUtils.isNotEmpty(pageResult.getRows())) {
+//			List<DocumentSignRecordExportDto> documentSignRecordExportDtos = new ArrayList<>();
+//			for(DocumentSignRecord documentSignRecord : pageResult.getRows()){
+//				DocumentSignRecordExportDto item = dtoModelMapper.map(documentSignRecord, DocumentSignRecordExportDto.class);
+//				// 设置序号
+//				item.setNo(no.getAndIncrement());
+//				// 枚举值赋值
+//				item.setSignStatusRemark(EnumUtils.getEnumItemRemark(SignStatus.class, documentSignRecord.getSignStatus()));
+//				documentSignRecordExportDtos.add(item);
+//				//导入excel
+//				writer.write(documentSignRecordExportDtos);
+//				//获取下一页导出数据
+//				search.getPageInfo().setPage(page++);
+//				pageResult = findByPage(search);
+//			}
+//		}
+//		Workbook workbook = writer.close();
+		try {
+			//加载文件
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//			workbook.write(stream);
+//			workbook.close();
+			String contentDisposition = ContentDisposition
+					.builder("attachment")
+					.filename(URLEncoder.encode(fileName, "UTF-8"))
+					.build().toString();
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+					.contentType(MediaType.APPLICATION_OCTET_STREAM)
+					.body(new ByteArrayResource(stream.toByteArray()));
+		} catch (IOException e) {
+			LogUtil.error("导出数据出现异常！" + e.getMessage(), e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 

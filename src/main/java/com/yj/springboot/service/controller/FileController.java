@@ -11,10 +11,7 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.Base64Utils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.zip.ZipOutputStream;
 
@@ -207,4 +205,238 @@ public class FileController {
 				.contentType(MediaType.parseMediaType("application/octet-stream;charset=UTF-8"))
 				.body(new ByteArrayResource(byteArrayOutputStream.toByteArray()));
 	}
+
+
+
+	// 下面是使用responseEntity和httpResponse的区别
+
+	/**
+	 * ResponseEntity图片预览
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/responseEntityView")
+	public ResponseEntity<byte[]> responseEntityView() throws Exception {
+		File file = new File("E:\\图片\\bpic4828.jpg");
+		InputStream inputStream = new FileInputStream(file);
+		byte[] bytes = null;
+		bytes = readInputStream(inputStream);
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		// 不是用缓存
+		httpHeaders.setCacheControl(CacheControl.noCache());
+		httpHeaders.setPragma("no-cache");
+		httpHeaders.setExpires(0L);
+		httpHeaders.setContentType(MediaType.IMAGE_JPEG);
+		ResponseEntity responseEntity = new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+		return responseEntity;
+	}
+
+	/**
+	 * ResponseEntity文件下载Post请求
+	 * （如果不会参数不多就最好使用get,post请求不会解码文件名，如果不编码中文就会成一个_，没有中文用那个都可以）
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/responseEntityDownloadPost")
+	public ResponseEntity<byte[]> responseEntityDownloadPost() throws Exception {
+		File file = new File("C:\\Users\\Administrator\\Desktop\\tt\\小儿喜.zip");
+		InputStream inputStream = new FileInputStream(file);
+		byte[] bytes = null;
+		bytes = readInputStream(inputStream);
+		String fileName = URLEncoder.encode(file.getName(), "UTF-8");
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentDispositionFormData("attachment", fileName);
+		httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		ResponseEntity responseEntity = new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+		return responseEntity;
+	}
+
+	/**
+	 * ResponseEntity文件下载Get请求
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/responseEntityDownloadGet")
+	public ResponseEntity<byte[]> responseEntityDownloadGet() throws Exception {
+		File file = new File("C:\\Users\\Administrator\\Desktop\\tt\\小儿喜.zip");
+		InputStream inputStream = new FileInputStream(file);
+		byte[] bytes = null;
+		bytes = readInputStream(inputStream);
+		String fileName = URLEncoder.encode(file.getName(), "UTF-8");
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentDispositionFormData("attachment", fileName);
+		httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		ResponseEntity responseEntity = new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+		return responseEntity;
+	}
+
+	/**
+	 * ResponseEntity文件下载Get请求PostPost请求不会自动解码，所以使用get请求转一下就没有问题了
+	 *
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/responseEntityDownloadGetByPost")
+	public ResponseEntity<byte[]> responseEntityDownloadGetByPost() throws Exception {
+		ResponseEntity<byte[]> responseEntity = this.responseEntityDownloadPost();
+		return responseEntity;
+	}
+
+	/**
+	 * HttpServletResponse图片预览
+	 *
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/httpServletResponseView")
+	public String httpServletResponseView(HttpServletResponse response) throws Exception { // 返回void也行
+		File file = new File("E:\\图片\\bpic4828.jpg");
+		InputStream inputStream = new FileInputStream(file);
+		byte[] bytes = null;
+		OutputStream outputStream = response.getOutputStream();
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		// 不使用缓存
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Pragma", "no-cache");
+		response.setDateHeader("expires", -1);
+		response.setHeader("Content-Disposition", "inline");
+		readInputStreamToOutStream(inputStream, outputStream);
+		return null;
+	}
+
+
+	/**
+	 * HttpServletResponse文件下载Post请求
+	 *
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping("/httpServletResponseDownloadPost")
+	public String httpServletResponseDownloadPost(HttpServletResponse response) throws Exception {
+		File file = new File("C:\\Users\\Administrator\\Desktop\\tt\\小儿喜.zip");
+		InputStream inputStream = new FileInputStream(file);
+		response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+		response.setCharacterEncoding("UTF-8");
+		OutputStream outputStream = response.getOutputStream();
+		String fileName = URLEncoder.encode(file.getName(), "UTF-8");
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+		readInputStreamToOutStream(inputStream, outputStream);
+		return null;
+	}
+
+	/**
+	 * HttpServletResponse文件下载Get请求
+	 *
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/httpServletResponseDownloadGet")
+	public String httpServletResponseDownloadGet(HttpServletResponse response) throws Exception {
+		File file = new File("C:\\Users\\Administrator\\Desktop\\tt\\小儿喜.zip");
+		InputStream inputStream = new FileInputStream(file);
+		response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+		response.setCharacterEncoding("UTF-8");
+		OutputStream outputStream = response.getOutputStream();
+		String fileName = URLEncoder.encode(file.getName(), "UTF-8");
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+		readInputStreamToOutStream(inputStream, outputStream);
+		return null;
+	}
+
+	/**
+	 * HttpServletResponse文件下载Get请求通过Post生成数据
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/httpServletResponseDownloadGetByPost")
+	public String httpServletResponseDownloadGetByPost(HttpServletResponse response) throws Exception {
+		this.httpServletResponseDownloadPost(response);
+		return null;
+	}
+
+	/**
+	 * ResponseEntity和 HttpServletResponse文件下载Get
+	 * 涉及到HttpMessageConverter 里面的 HandlerMethodReturnValueHandler
+	 * 总之就是HttpMessageConverter会把ResponseEntity的信息放到response中
+	 * 个人猜测：如果HttpServletResponse的body（outStream）已经有值的话，ResponseEntity的东西就不能覆盖HttpServletResponse中名字一样的值
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@GetMapping("/dwonlaodUnion")
+	public  ResponseEntity<byte[]> dwonlaodUnion(HttpServletResponse response) throws Exception {
+
+
+
+		//操作response
+		File file = new File("C:\\Users\\YJ\\Desktop\\新建 文本文档.txt");
+		InputStream inputStream = new FileInputStream(file);
+		response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+		response.setCharacterEncoding("UTF-8");
+		OutputStream outputStream = response.getOutputStream();
+		String fileName = URLEncoder.encode(file.getName(), "UTF-8");
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+		readInputStreamToOutStream(inputStream, outputStream);
+
+		// 操作ResponseEntity
+		File file1 = new File("C:\\Users\\YJ\\Desktop\\发布.txt");
+		byte[] bytes = null;
+		InputStream inputStream1 = new FileInputStream(file1);
+		bytes = readInputStream(inputStream1);
+		String fileName1 = URLEncoder.encode(file1.getName(), "UTF-8");
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add("Content-Disposition", "attachment;filename=" + fileName1);
+		httpHeaders.setContentType(MediaType.APPLICATION_PDF);
+		ResponseEntity responseEntity = new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+
+		return responseEntity;
+	}
+
+
+	/**
+	 * 输入流装成字节数组
+	 *
+	 * @param inStream
+	 * @return
+	 * @throws Exception
+	 */
+	private byte[] readInputStream(InputStream inStream) throws Exception {
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		while ((len = inStream.read(buffer)) != -1) {
+			outStream.write(buffer, 0, len);
+		}
+		inStream.close();
+		return outStream.toByteArray();
+	}
+
+	/**
+	 * 输入流写进输出流
+	 *
+	 * @param inStream
+	 * @param outStream
+	 * @throws Exception
+	 */
+	private void readInputStreamToOutStream(InputStream inStream, OutputStream outStream) throws Exception {
+		byte[] buffer = new byte[1024];
+		int len = 0;
+		while ((len = inStream.read(buffer)) != -1) {
+			outStream.write(buffer, 0, len);
+		}
+		inStream.close();
+		outStream.close();
+	}
+
 }
