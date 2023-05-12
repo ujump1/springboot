@@ -133,6 +133,11 @@ dependencies {
     compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
 
 
+    compile 'net.sf.barcode4j:barcode4j-light:2.0'
+
+    compile 'com.google.zxing:javase:3.5.0'
+
+
 
 
 

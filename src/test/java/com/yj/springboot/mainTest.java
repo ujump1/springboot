@@ -195,6 +195,19 @@ public class mainTest extends BaseTest{
 		accountVoucherItemDtoList.add(accountVoucherItemDto2);
 		dataMap.put("items",accountVoucherItemDtoList);
 		pdfUtil.generatePDF("accountInfo.html","C:\\Users\\YJ\\Desktop\\简历6.pdf",dataMap);
+		//pdfUtil.generatePDFXMLWorkerHelper("accountInfo.html","C:\\Users\\YJ\\Desktop\\简历6xml.pdf",dataMap);
+	}
+
+	@Test
+	public void generate5() throws IOException {
+		String htmlData ;
+		FileInputStream fileInputStream = new FileInputStream("C:\\Users\\YJ\\Desktop\\2.html");
+		byte[] buffer = new byte[1024];
+		StringBuilder stringBuilder = new StringBuilder();
+		while (fileInputStream.read(buffer)!=-1){
+			stringBuilder.append(new String(buffer));
+			buffer = new byte[1024];
+		}
 	}
 
 

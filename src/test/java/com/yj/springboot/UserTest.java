@@ -12,14 +12,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.annotation.Rollback;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 
 import static java.lang.Thread.sleep;
 
@@ -91,6 +87,28 @@ public class UserTest extends BaseTest {
 			System.out.println(future.get());
 		}
 	}
+	@Test
+	//异步方式 3
+	public void testAsync3() throws ExecutionException, InterruptedException {
+		// 使用多线程检查
+		List<CompletableFuture<Integer>> completableFutures = new ArrayList<>();
+		System.out.println("主线程开始");
+		for(int i =0;i<10;i++) {
+			// 每一行添加一个线程
+			CompletableFuture<Integer> completableFuture = CompletableFuture.supplyAsync(() ->  userService.sum1());
+			completableFutures.add(completableFuture);
+		}
+		for (CompletableFuture<Integer> completableFuture : completableFutures) {
+			try {
+				System.out.println(completableFuture.get());
+
+			} catch (Exception e) {
+				System.out.println("异常，请重试！");
+			}
+		}
+		System.out.println("结束");
+
+	}
 
 
 	@Test
@@ -139,5 +157,4 @@ public class UserTest extends BaseTest {
 	public void testUpdate(){
 		userService.testUpdate();
 	}
-
 }
