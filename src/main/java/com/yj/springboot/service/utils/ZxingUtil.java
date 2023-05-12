@@ -37,7 +37,7 @@ public class ZxingUtil {
 		String format = "png";// 图像类型
 		Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
 		hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-		hints.put(EncodeHintType.MARGIN, 4);//设置二维码边的空度，非负数，默认值为4。
+		hints.put(EncodeHintType.MARGIN, 1);//设置二维码边的空度，非负数，默认值为4。
 		BitMatrix bitMatrix = null;// 生成矩阵
 		try {
 			bitMatrix = new MultiFormatWriter().encode(content, BarcodeFormat.QR_CODE, width, height, hints);
